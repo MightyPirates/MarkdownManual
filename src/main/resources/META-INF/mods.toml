@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[31,)"
+issueTrackerURL = "${mod_issues_url}"
+license = "MIT"
+
+[[mods]]
+modId = "markdown_manual"
+version = "${mod_version}"
+displayName = "${mod_name}"
+displayURL = "${mod_url}"
+authors = "Sangar"
+description = '''
+Library mod providing a convenient way of defining in-game manuals.
+'''
+
+[[dependencies.markdown_manual]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version_min},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.markdown_manual]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version_min}]"
+ordering = "NONE"
+side = "BOTH"
