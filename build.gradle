@@ -155,6 +155,7 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId archivesBaseName
             artifact jar
             artifact apiJar
         }
