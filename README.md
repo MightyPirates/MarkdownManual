@@ -43,8 +43,9 @@ your_mod_dev_dir
     |-+ assets
       |-+ your_mod_id
         |-+ doc
-          |-  index.md
-          | ...
+          |-+ en_us
+            |-  index.md
+            | ...
 ```
 
 Usually you'll then also want to add an item representing this manual in the game. For a simple setup, subclass
