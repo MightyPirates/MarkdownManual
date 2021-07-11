@@ -1,1 +1,1 @@
-* Initial release.
+* Added bitmap font renderer prefab class.

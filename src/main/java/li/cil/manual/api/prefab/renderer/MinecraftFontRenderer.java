@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.text.ITextComponent;
 
+/**
+ * Implementation of the {@link FontRenderer} interface using the default Minecraft font renderer.
+ */
 public final class MinecraftFontRenderer implements FontRenderer {
     private final net.minecraft.client.gui.FontRenderer font;
 
