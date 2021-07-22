@@ -44,8 +44,8 @@ archivesBaseName = "${mod_name.replace(' ', '-')}-MC${minecraft_version}-Forge"
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" } // JEI
-    maven { url "http://maven.cil.li/" } // Markdown Manual
+    maven { url "https://dvs1.progwml6.com/files/maven" } // JEI
+    maven { url "https://maven.cil.li/" } // Markdown Manual
 }
 
 dependencies {
