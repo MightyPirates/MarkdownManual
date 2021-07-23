@@ -5,25 +5,25 @@ import li.cil.manual.api.Tab;
 import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
 import li.cil.manual.api.provider.RendererProvider;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
     public static final String MOD_ID = "markdown_manual";
 
     // ----------------------------------------------------------------------- //
 
-    public static final RegistryKey<Registry<PathProvider>> PATH_PROVIDERS = key("path_providers");
-    public static final RegistryKey<Registry<DocumentProvider>> DOCUMENT_PROVIDERS = key("document_providers");
-    public static final RegistryKey<Registry<RendererProvider>> RENDERER_PROVIDERS = key("renderer_providers");
-    public static final RegistryKey<Registry<Tab>> TABS = key("tabs");
-    public static final RegistryKey<Registry<ManualModel>> MANUALS = key("manuals");
+    public static final ResourceKey<Registry<PathProvider>> PATH_PROVIDERS = key("path_providers");
+    public static final ResourceKey<Registry<DocumentProvider>> DOCUMENT_PROVIDERS = key("document_providers");
+    public static final ResourceKey<Registry<RendererProvider>> RENDERER_PROVIDERS = key("renderer_providers");
+    public static final ResourceKey<Registry<Tab>> TABS = key("tabs");
+    public static final ResourceKey<Registry<ManualModel>> MANUALS = key("manuals");
 
     // ----------------------------------------------------------------------- //
 
-    private static <T> RegistryKey<Registry<T>> key(final String name) {
-        return RegistryKey.createRegistryKey(new ResourceLocation(MOD_ID, name));
+    private static <T> ResourceKey<Registry<T>> key(final String name) {
+        return ResourceKey.createRegistryKey(new ResourceLocation(MOD_ID, name));
     }
 
     // ----------------------------------------------------------------------- //

@@ -4,8 +4,8 @@ import com.google.common.base.Charsets;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.api.provider.DocumentProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -40,7 +40,7 @@ public class NamespaceDocumentProvider extends ForgeRegistryEntry<DocumentProvid
 
     @Override
     public Optional<Document> getDocument(final String path, final String language) {
-        final IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        final ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         final ResourceLocation location = new ResourceLocation(namespace, basePath + path);
         try (final InputStream stream = resourceManager.getResource(location).getInputStream()) {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));

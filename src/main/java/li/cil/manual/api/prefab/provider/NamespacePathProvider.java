@@ -2,14 +2,14 @@ package li.cil.manual.api.prefab.provider;
 
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.provider.PathProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -77,7 +77,7 @@ public class NamespacePathProvider extends ForgeRegistryEntry<PathProvider> impl
     }
 
     @Override
-    public Optional<String> pathFor(final World world, final BlockPos pos, final Direction face) {
+    public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
         final Block block = world.getBlockState(pos).getBlock();
         final ResourceLocation blockId = block.getRegistryName();
         if (blockId == null) {

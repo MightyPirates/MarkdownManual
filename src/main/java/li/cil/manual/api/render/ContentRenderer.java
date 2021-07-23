@@ -1,6 +1,6 @@
 package li.cil.manual.api.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,5 +49,5 @@ public interface ContentRenderer {
      * @param mouseX      the X position of the mouse relative to the element.
      * @param mouseY      the Y position of the mouse relative to the element.
      */
-    void render(final MatrixStack matrixStack, final int mouseX, final int mouseY);
+    void render(final PoseStack matrixStack, final int mouseX, final int mouseY);
 }

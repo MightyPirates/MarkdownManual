@@ -1,20 +1,20 @@
 package li.cil.manual.api.prefab.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.api.util.Constants;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Optional;
 
@@ -46,8 +46,8 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     /**
      * {@inheritDoc}
      */
-    public void drawBatch(final MatrixStack matrixStack, final IRenderTypeBuffer bufferFactory, final CharSequence value, final int argb) {
-        final IVertexBuilder buffer = getDefaultBuffer(bufferFactory);
+    public void drawBatch(final PoseStack matrixStack, final MultiBufferSource bufferFactory, final CharSequence value, final int argb) {
+        final VertexConsumer buffer = getDefaultBuffer(bufferFactory);
 
         float tx = 0f;
         for (int i = 0; i < value.length(); i++) {
@@ -69,7 +69,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
      * {@inheritDoc}
      */
     @Override
-    public int width(final ITextComponent value) {
+    public int width(final Component value) {
         final MutableInteger count = new MutableInteger();
         value.visit(s -> {
             count.value += s.length() * charWidth();
@@ -132,7 +132,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
 
     // --------------------------------------------------------------------- //
 
-    private IVertexBuilder getDefaultBuffer(final IRenderTypeBuffer bufferFactory) {
+    private VertexConsumer getDefaultBuffer(final MultiBufferSource bufferFactory) {
         if (renderLayer == null) {
             renderLayer = FontRenderTypes.create(getTextureLocation());
         }
@@ -140,7 +140,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         return bufferFactory.getBuffer(renderLayer);
     }
 
-    private void drawChar(final MatrixStack matrixStack, final IVertexBuilder buffer, final int argb, final float x, final char ch) {
+    private void drawChar(final PoseStack matrixStack, final VertexConsumer buffer, final int argb, final float x, final char ch) {
         if (Character.isWhitespace(ch) || Character.isISOControl(ch)) {
             return;
         }
@@ -192,14 +192,14 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     private static final class FontRenderTypes extends RenderType {
         public static RenderType create(final ResourceLocation texture) {
             return create(Constants.MOD_ID + "/bitmap_font",
-                DefaultVertexFormats.POSITION_COLOR_TEX,
-                GL11.GL_QUADS, 256,
+                DefaultVertexFormat.POSITION_COLOR_TEX,
+                VertexFormat.Mode.QUADS, 256,
                 false, false,
-                State.builder()
-                    .setTextureState(new TextureState(texture, false, false))
+                CompositeState.builder()
+                    .setTextureState(new TextureStateShard(texture, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                    .setDiffuseLightingState(NO_DIFFUSE_LIGHTING)
-                    .setAlphaState(DEFAULT_ALPHA)
+//                    .setDiffuseLightingState(NO_DIFFUSE_LIGHTING)
+//                    .setAlphaState(DEFAULT_ALPHA)
                     .setLightmapState(NO_LIGHTMAP)
                     .setOutputState(TRANSLUCENT_TARGET)
                     .setWriteMaskState(COLOR_WRITE)
@@ -209,7 +209,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         // --------------------------------------------------------------------- //
 
         private FontRenderTypes() {
-            super("", DefaultVertexFormats.POSITION, 0, 256, false, false, () -> {}, () -> {});
+            super("", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, () -> {}, () -> {});
             throw new UnsupportedOperationException("No meant to be instantiated.");
         }
     }

@@ -1,16 +1,16 @@
 package li.cil.manual.client.document.segment.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.client.document.DocumentRenderTypes;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +27,7 @@ public class TextureContentRenderer implements ContentRenderer {
         this.location = location;
 
         final TextureManager manager = Minecraft.getInstance().getTextureManager();
-        final Texture image = manager.getTexture(location);
+        final AbstractTexture image = manager.getTexture(location);
         if (image instanceof ImageTexture) {
             this.texture = (ImageTexture) image;
         } else {
@@ -52,7 +52,7 @@ public class TextureContentRenderer implements ContentRenderer {
     }
 
     @Override
-    public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY) {
+    public void render(final PoseStack matrixStack, final int mouseX, final int mouseY) {
         DocumentRenderTypes.draw(DocumentRenderTypes.texture(location), (buffer) -> {
             final Matrix4f matrix = matrixStack.last().pose();
             buffer.vertex(matrix, 0, texture.height, 0).uv(0, 1).endVertex();
@@ -74,13 +74,16 @@ public class TextureContentRenderer implements ContentRenderer {
         }
 
         @Override
-        public void load(final IResourceManager manager) throws IOException {
+        public void load(final ResourceManager manager) throws IOException {
             super.load(manager);
-            try (final TextureData textureData = getTextureImage(manager)) {
+            final TextureImage textureData = getTextureImage(manager);
+            try {
                 final NativeImage nativeImage = textureData.getImage();
                 width = nativeImage.getWidth();
                 height = nativeImage.getHeight();
                 isValid = true;
+            } finally {
+                textureData.close();
             }
         }
     }

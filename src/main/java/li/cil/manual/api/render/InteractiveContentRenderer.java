@@ -1,6 +1,6 @@
 package li.cil.manual.api.render;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public interface InteractiveContentRenderer extends ContentRenderer {
      * @param tooltip the original tooltip of the element.
      * @return the tooltip to use for the element.
      */
-    ITextComponent getTooltip(final ITextComponent tooltip);
+    Component getTooltip(final Component tooltip);
 
     /**
      * Called when the mouse is clicked while over this image renderer.

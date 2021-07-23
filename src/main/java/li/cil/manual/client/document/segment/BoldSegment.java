@@ -2,7 +2,7 @@ package li.cil.manual.client.document.segment;
 
 
 import li.cil.manual.client.document.DocumentRenderer;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,6 +23,6 @@ public final class BoldSegment extends TextSegment {
 
     @Override
     protected String getFormat() {
-        return super.getFormat() + TextFormatting.BOLD;
+        return super.getFormat() + ChatFormatting.BOLD;
     }
 }

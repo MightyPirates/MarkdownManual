@@ -1,10 +1,10 @@
 package li.cil.manual.client.document.segment;
 
 import li.cil.manual.client.document.DocumentRenderer;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,9 +34,9 @@ public final class LinkSegment extends TextSegment implements InteractiveSegment
     // --------------------------------------------------------------------- //
 
     @Override
-    public Optional<ITextComponent> getTooltip() {
+    public Optional<Component> getTooltip() {
         if (style.showLinkTooltip()) {
-            return Optional.of(new StringTextComponent(url));
+            return Optional.of(new TextComponent(url));
         } else {
             return Optional.empty();
         }
@@ -89,7 +89,7 @@ public final class LinkSegment extends TextSegment implements InteractiveSegment
     @Override
     protected String getFormat() {
         if (isHovered) {
-            return super.getFormat() + TextFormatting.UNDERLINE;
+            return super.getFormat() + ChatFormatting.UNDERLINE;
         } else {
             return super.getFormat();
         }

@@ -9,12 +9,12 @@ import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.Strings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -70,7 +70,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      * {@inheritDoc}
      */
     @Override
-    public Optional<String> pathFor(final World world, final BlockPos pos, final Direction face) {
+    public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
         return find(Constants.PATH_PROVIDERS, provider -> provider.pathFor(world, pos, face));
     }
 
@@ -195,7 +195,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
         return new History(path);
     }
 
-    protected <TProvider extends MarkdownManualRegistryEntry<TProvider>, TResult> Optional<TResult> find(final RegistryKey<Registry<TProvider>> key, final Function<TProvider, Optional<TResult>> lookup) {
+    protected <TProvider extends MarkdownManualRegistryEntry<TProvider>, TResult> Optional<TResult> find(final ResourceKey<Registry<TProvider>> key, final Function<TProvider, Optional<TResult>> lookup) {
         return RegistryManager.ACTIVE.getRegistry(key).getValues().stream().
             filter(provider -> provider.matches(this)).
             sorted().map(lookup).filter(Optional::isPresent).findFirst().flatMap(x -> x);

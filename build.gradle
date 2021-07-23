@@ -41,7 +41,10 @@ version = "${semver}+${build_number}"
 group = 'li.cil.markdown_manual'
 archivesBaseName = 'markdown_manual'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain {
+    languageVersion = JavaLanguageVersion.of(16)
+    vendor = JvmVendorSpec.ADOPTOPENJDK
+}
 
 repositories {
     maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
@@ -50,8 +53,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
+//    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
+//    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
 }
 
 minecraft {
@@ -157,6 +160,6 @@ curseforge {
         changelog = file('changelog.md')
         addGameVersion 'Forge'
         addGameVersion minecraft_version
-        addGameVersion 'Java 8'
+        addGameVersion 'Java 16'
     }
 }

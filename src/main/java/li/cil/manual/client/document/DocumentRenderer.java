@@ -1,13 +1,13 @@
 package li.cil.manual.client.document;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.client.document.segment.*;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
@@ -175,7 +175,7 @@ public final class DocumentRenderer {
      * @param mouseY      the y position of the mouse relative to the document.
      * @return the interactive segment being hovered, if any.
      */
-    public Optional<InteractiveSegment> render(final MatrixStack matrixStack, final int scrollY, final int width, final int height, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int scrollY, final int width, final int height, final int mouseX, final int mouseY) {
         if (root == null) {
             return Optional.empty();
         }
@@ -184,7 +184,7 @@ public final class DocumentRenderer {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
 
         // Tow options here, disable alpha testing or disable color output. We pick the former.
-        RenderSystem.disableAlphaTest();
+//        RenderSystem.disableAlphaTest(); todo
 
         matrixStack.pushPose();
         matrixStack.translate(0, 0, 500);
@@ -192,7 +192,7 @@ public final class DocumentRenderer {
         Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0);
         matrixStack.popPose();
 
-        RenderSystem.enableAlphaTest();
+//        RenderSystem.enableAlphaTest(); todo
 
         // Actual rendering.
         final boolean isMouseOverDocument = mouseX >= 0 || mouseX <= width || mouseY >= 0 || mouseY <= height;
@@ -245,7 +245,7 @@ public final class DocumentRenderer {
 
                 matrixStack.popPose();
 
-                if (isMouseOverDocument && !hovered.isPresent()) {
+                if (isMouseOverDocument && hovered.isEmpty()) {
                     hovered = result;
                 }
             }

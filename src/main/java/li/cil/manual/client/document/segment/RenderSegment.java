@@ -1,6 +1,7 @@
 package li.cil.manual.client.document.segment;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
 import li.cil.manual.api.util.PathUtils;
@@ -8,10 +9,9 @@ import li.cil.manual.client.document.DocumentRenderTypes;
 import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,14 +19,14 @@ import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public final class RenderSegment extends AbstractSegment implements InteractiveSegment {
-    private final ITextComponent title;
+    private final Component title;
     private final ContentRenderer renderer;
 
     // --------------------------------------------------------------------- //
 
     public RenderSegment(final DocumentRenderer document, final Segment parent, final String title, final String url) {
         super(document, parent);
-        this.title = new StringTextComponent(title);
+        this.title = new TextComponent(title);
 
         final String path;
         if (url.contains(":")) {
@@ -47,7 +47,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
     // --------------------------------------------------------------------- //
 
     @Override
-    public Optional<ITextComponent> getTooltip() {
+    public Optional<Component> getTooltip() {
         if (renderer instanceof InteractiveContentRenderer) {
             return Optional.of(((InteractiveContentRenderer) renderer).getTooltip(title));
         } else {
@@ -67,7 +67,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
     }
 
     @Override
-    public Optional<InteractiveSegment> render(final MatrixStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
         final int width = imageWidth(segmentX, documentWidth);
         final int height = imageHeight(segmentX, documentWidth);
 
@@ -137,7 +137,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
     }
 
     private int imageHeight(final int segmentX, final int documentWidth) {
-        return MathHelper.ceil(renderer.getHeight() * scale(segmentX, documentWidth));
+        return Mth.ceil(renderer.getHeight() * scale(segmentX, documentWidth));
     }
 
     private float scale(final int segmentX, final int documentWidth) {

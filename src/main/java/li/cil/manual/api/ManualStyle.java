@@ -3,8 +3,8 @@ package li.cil.manual.api;
 import li.cil.manual.api.prefab.renderer.MinecraftFontRenderer;
 import li.cil.manual.api.render.FontRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

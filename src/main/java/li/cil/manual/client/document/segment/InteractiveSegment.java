@@ -1,6 +1,6 @@
 package li.cil.manual.client.document.segment;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public interface InteractiveSegment extends Segment {
      *
      * @return the tooltip for this interactive segment, if any.
      */
-    default Optional<ITextComponent> getTooltip() {
+    default Optional<Component> getTooltip() {
         return Optional.empty();
     }
 

@@ -1,8 +1,8 @@
 package li.cil.manual.api;
 
 import li.cil.manual.api.util.Constants;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,28 +30,28 @@ public interface ManualScreenStyle {
         return new ResourceLocation(Constants.MOD_ID, "textures/gui/tab_button.png");
     }
 
-    default Rectangle2d getWindowRect() {
-        return new Rectangle2d(0, 0, 256, 256);
+    default Rect2i getWindowRect() {
+        return new Rect2i(0, 0, 256, 256);
     }
 
-    default Rectangle2d getDocumentRect() {
-        return new Rectangle2d(24, 16, 208, 216);
+    default Rect2i getDocumentRect() {
+        return new Rect2i(24, 16, 208, 216);
     }
 
-    default Rectangle2d getScrollBarRect() {
-        return new Rectangle2d(250, 16, 20, 216);
+    default Rect2i getScrollBarRect() {
+        return new Rect2i(250, 16, 20, 216);
     }
 
-    default Rectangle2d getScrollButtonRect() {
-        return new Rectangle2d(0, 0, 20, 12);
+    default Rect2i getScrollButtonRect() {
+        return new Rect2i(0, 0, 20, 12);
     }
 
-    default Rectangle2d getTabAreaRect() {
-        return new Rectangle2d(-52, 25, 64, 216);
+    default Rect2i getTabAreaRect() {
+        return new Rect2i(-52, 25, 64, 216);
     }
 
-    default Rectangle2d getTabRect() {
-        return new Rectangle2d(0, 0, 64, 24);
+    default Rect2i getTabRect() {
+        return new Rect2i(0, 0, 64, 24);
     }
 
     default int getTabOverlap() {

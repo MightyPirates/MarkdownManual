@@ -1,8 +1,8 @@
 package li.cil.manual.api;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,14 +26,14 @@ public interface Tab extends MarkdownManualRegistryEntry<Tab> {
      *
      * @param matrixStack the current matrix stack.
      */
-    void renderIcon(MatrixStack matrixStack);
+    void renderIcon(PoseStack matrixStack);
 
     /**
      * The (ideally localized) tooltip for the tab.
      *
      * @param tooltip the list to add the tooltip to.
      */
-    void getTooltip(List<ITextComponent> tooltip);
+    void getTooltip(List<Component> tooltip);
 
     /**
      * The path to the page to open when the tab is clicked.

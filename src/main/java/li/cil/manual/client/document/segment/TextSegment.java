@@ -1,11 +1,11 @@
 package li.cil.manual.client.document.segment;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.client.document.DocumentRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
@@ -75,7 +75,7 @@ public class TextSegment extends AbstractSegment {
     }
 
     @Override
-    public Optional<InteractiveSegment> render(final MatrixStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
         final String format = getFormat();
         final float scale = getFontScale() * getScale();
         final int color = getColor();
@@ -83,13 +83,13 @@ public class TextSegment extends AbstractSegment {
         final Optional<InteractiveSegment> interactive = getInteractiveParent();
         final ObjectReference<Optional<InteractiveSegment>> hovered = new ObjectReference<>(Optional.empty());
 
-        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
-        final IRenderTypeBuffer.Impl bufferSource = IRenderTypeBuffer.immediate(builder);
+        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        final MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(builder);
 
         forEachBlock(segmentX, lineHeight, documentWidth, block -> {
             final int blockWidth = getStringWidth(block.chars);
             final int blockHeight = getLineHeight();
-            if (!hovered.value.isPresent() &&
+            if (hovered.value.isEmpty() &&
                 mouseX >= block.x && mouseX <= block.x + blockWidth &&
                 mouseY >= block.y && mouseY <= block.y + blockHeight) {
                 hovered.value = interactive;
@@ -306,40 +306,9 @@ public class TextSegment extends AbstractSegment {
         }
     }
 
-    private static final class CacheKey {
-        private final int segmentX;
-        private final int lineHeight;
-        private final int documentWidth;
-
-        public CacheKey(final int segmentX, final int lineHeight, final int documentWidth) {
-            this.segmentX = segmentX;
-            this.lineHeight = lineHeight;
-            this.documentWidth = documentWidth;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            final CacheKey that = (CacheKey) o;
-            return segmentX == that.segmentX && lineHeight == that.lineHeight && documentWidth == that.documentWidth;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(segmentX, lineHeight, documentWidth);
-        }
+    private record CacheKey(int segmentX, int lineHeight, int documentWidth) {
     }
 
-    private static final class TextBlock {
-        public final int x;
-        public final int y;
-        public final String chars;
-
-        public TextBlock(final int x, final int y, final String chars) {
-            this.x = x;
-            this.y = y;
-            this.chars = chars;
-        }
+    private record TextBlock(int x, int y, String chars) {
     }
 }

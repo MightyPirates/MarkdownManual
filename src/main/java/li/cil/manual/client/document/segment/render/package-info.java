@@ -2,6 +2,6 @@
 @MethodsReturnNonnullByDefault
 package li.cil.manual.client.document.segment.render;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

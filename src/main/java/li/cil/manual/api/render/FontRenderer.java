@@ -1,10 +1,10 @@
 package li.cil.manual.api.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public interface FontRenderer {
      * @param value       the string to render.
      * @param argb        the color to render the string with.
      */
-    void drawBatch(final MatrixStack matrixStack, final IRenderTypeBuffer buffer, final CharSequence value, final int argb);
+    void drawBatch(final PoseStack matrixStack, final MultiBufferSource buffer, final CharSequence value, final int argb);
 
     /**
      * Draws a string in immediate mode.
@@ -30,9 +30,9 @@ public interface FontRenderer {
      * @param value       the string to render.
      * @param argb        the color to render the string with.
      */
-    default void draw(final MatrixStack matrixStack, final CharSequence value, final int argb) {
-        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
-        final IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(builder);
+    default void draw(final PoseStack matrixStack, final CharSequence value, final int argb) {
+        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        final MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(builder);
         drawBatch(matrixStack, buffer, value, argb);
         buffer.endBatch();
     }
@@ -51,7 +51,7 @@ public interface FontRenderer {
      * @param value the value to get the render width for.
      * @return the render width of the specified value.
      */
-    int width(final ITextComponent value);
+    int width(final Component value);
 
     /**
      * Get the height of the characters drawn with the font renderer, in pixels.

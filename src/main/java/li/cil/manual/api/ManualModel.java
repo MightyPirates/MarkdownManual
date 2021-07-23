@@ -5,10 +5,10 @@ import li.cil.manual.api.prefab.Manual;
 import li.cil.manual.api.prefab.item.AbstractManualItem;
 import li.cil.manual.api.provider.RendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Optional;
@@ -65,7 +65,7 @@ public interface ManualModel extends IForgeRegistryEntry<ManualModel> {
      * @param face  the face of the block.
      * @return the path to the page, {@code null} if none is known.
      */
-    Optional<String> pathFor(World world, BlockPos pos, Direction face);
+    Optional<String> pathFor(Level world, BlockPos pos, Direction face);
 
     /**
      * Get the document at the specified location.

@@ -2,10 +2,10 @@ package li.cil.manual.api.provider;
 
 import li.cil.manual.api.prefab.Manual;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,5 +46,5 @@ public interface PathProvider extends MarkdownManualRegistryEntry<PathProvider> 
      * @param face  the face of the block.
      * @return the path to the page, {@code null} if none is known.
      */
-    Optional<String> pathFor(final World world, final BlockPos pos, final Direction face);
+    Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face);
 }

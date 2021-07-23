@@ -1,23 +1,20 @@
 package li.cil.manual.client.document;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.*;
 import li.cil.manual.api.util.Constants;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
 public final class DocumentRenderTypes extends RenderType {
     private static final RenderType HIGHLIGHT = create(Constants.MOD_ID + "/highlight",
-        DefaultVertexFormats.POSITION_COLOR,
-        GL11.GL_QUADS, 4,
+        DefaultVertexFormat.POSITION_COLOR,
+        VertexFormat.Mode.QUADS, 4,
         false, false,
-        State.builder()
+        CompositeState.builder()
+            .setShaderState(POSITION_COLOR_SHADER)
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setWriteMaskState(COLOR_WRITE)
             .createCompositeState(false));
@@ -28,20 +25,21 @@ public final class DocumentRenderTypes extends RenderType {
 
     public static RenderType texture(final ResourceLocation location) {
         return create(Constants.MOD_ID + "/texture",
-            DefaultVertexFormats.POSITION_TEX,
-            GL11.GL_QUADS, 4,
+            DefaultVertexFormat.POSITION_TEX,
+            VertexFormat.Mode.QUADS, 4,
             false, false,
-            State.builder()
-                .setTextureState(new TextureState(location, false, false))
+            CompositeState.builder()
+                .setShaderState(POSITION_TEX_SHADER)
+                .setTextureState(new TextureStateShard(location, false, false))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                 .setWriteMaskState(COLOR_WRITE)
                 .createCompositeState(false));
     }
 
-    public static void draw(final RenderType renderType, final Consumer<IVertexBuilder> callback) {
-        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
-        final IRenderTypeBuffer.Impl bufferSource = IRenderTypeBuffer.immediate(builder);
-        final IVertexBuilder buffer = bufferSource.getBuffer(renderType);
+    public static void draw(final RenderType renderType, final Consumer<VertexConsumer> callback) {
+        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        final MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(builder);
+        final VertexConsumer buffer = bufferSource.getBuffer(renderType);
 
         callback.accept(buffer);
 
@@ -51,7 +49,7 @@ public final class DocumentRenderTypes extends RenderType {
     // --------------------------------------------------------------------- //
 
     private DocumentRenderTypes() {
-        super("", DefaultVertexFormats.POSITION, 0, 256, false, false, () -> {}, () -> {});
+        super("", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, () -> {}, () -> {});
         throw new UnsupportedOperationException("No meant to be instantiated.");
     }
 }

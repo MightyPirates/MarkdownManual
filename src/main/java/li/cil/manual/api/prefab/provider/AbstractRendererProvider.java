@@ -1,7 +1,7 @@
 package li.cil.manual.api.prefab.provider;
 
-import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.provider.RendererProvider;
+import li.cil.manual.api.render.ContentRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;

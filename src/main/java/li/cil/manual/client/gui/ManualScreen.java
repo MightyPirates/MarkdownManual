@@ -1,7 +1,7 @@
 package li.cil.manual.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualScreenStyle;
 import li.cil.manual.api.ManualStyle;
@@ -11,23 +11,21 @@ import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.segment.InteractiveSegment;
 import li.cil.manual.client.util.IterableUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -51,7 +49,7 @@ public final class ManualScreen extends Screen {
     private ScrollButton scrollButton = null;
 
     public ManualScreen(final ManualModel model, final ManualStyle manualStyle, final ManualScreenStyle screenStyle) {
-        super(new StringTextComponent("Manual"));
+        super(new TextComponent("Manual"));
         this.model = model;
         this.manualStyle = manualStyle;
         this.screenStyle = screenStyle;
@@ -69,10 +67,10 @@ public final class ManualScreen extends Screen {
             final int x = screenStyle.getTabAreaRect().getX();
             final int y = screenStyle.getTabAreaRect().getY() + i * getTabClickableHeight();
             if (y + screenStyle.getTabRect().getHeight() > screenStyle.getTabAreaRect().getHeight()) return;
-            addButton(new TabButton(leftPos + x, topPos + y, tab, (button) -> pushManualPage(tab)));
+            addWidget(new TabButton(leftPos + x, topPos + y, tab, (button) -> pushManualPage(tab)));
         });
 
-        scrollButton = addButton(new ScrollButton(
+        scrollButton = addWidget(new ScrollButton(
             leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollButtonRect().getX(),
             topPos + screenStyle.getScrollBarRect().getY() + screenStyle.getScrollButtonRect().getY(),
             screenStyle.getScrollButtonRect().getWidth(),
@@ -80,18 +78,18 @@ public final class ManualScreen extends Screen {
     }
 
     @Override
-    public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+    public void render(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
         renderBackground(matrixStack);
 
         if (!Objects.equals(currentPath, model.peek())) {
             refreshPage();
             currentPath = model.peek();
 
-            final SoundHandler soundHandler = Minecraft.getInstance().getSoundManager();
-            soundHandler.play(SimpleSound.forUI(manualStyle.getPageChangeSound(), 1));
+            final SoundManager soundHandler = Minecraft.getInstance().getSoundManager();
+            soundHandler.play(SimpleSoundInstance.forUI(manualStyle.getPageChangeSound(), 1));
         }
 
-        scrollPos = MathHelper.lerp(partialTicks * 0.5f, scrollPos, getScrollPosition());
+        scrollPos = Mth.lerp(partialTicks * 0.5f, scrollPos, getScrollPosition());
 
         RenderSystem.enableBlend();
 
@@ -102,15 +100,16 @@ public final class ManualScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         // Render manual background.
-        getMinecraft().getTextureManager().bind(screenStyle.getWindowBackground());
-        final Rectangle2d windowRect = screenStyle.getWindowRect();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, screenStyle.getWindowBackground());
+        final Rect2i windowRect = screenStyle.getWindowRect();
         blit(matrixStack, leftPos, topPos, 0, 0, windowRect.getWidth(), windowRect.getHeight(), windowRect.getWidth(), windowRect.getHeight());
 
         // Render scroll button in front of manual.
         scrollButton.active = canScroll();
         scrollButton.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        final Rectangle2d documentRect = screenStyle.getDocumentRect();
+        final Rect2i documentRect = screenStyle.getDocumentRect();
         final int documentX = leftPos + documentRect.getX();
         final int documentY = topPos + documentRect.getY();
 
@@ -124,11 +123,13 @@ public final class ManualScreen extends Screen {
         matrixStack.popPose();
 
         currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t ->
-            renderWrappedToolTip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
+            renderComponentToolTip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
 
-        for (final Widget widget : this.buttons) {
-            if (widget.active && (!isDragging || widget instanceof ScrollButton)) {
-                widget.renderToolTip(matrixStack, mouseX, mouseY);
+        for (final Widget widget : this.renderables) {
+            if (widget instanceof final AbstractWidget button) {
+                if (button.active && (!isDragging || widget instanceof ScrollButton)) {
+                    button.renderToolTip(matrixStack, mouseX, mouseY);
+                }
             }
         }
     }
@@ -149,7 +150,7 @@ public final class ManualScreen extends Screen {
             popManualPage();
             return true;
         } else if (getMinecraft().options.keyInventory.matches(keyCode, scanCode)) {
-            final ClientPlayerEntity player = getMinecraft().player;
+            final LocalPlayer player = getMinecraft().player;
             if (player != null) {
                 player.closeContainer();
             }
@@ -222,7 +223,7 @@ public final class ManualScreen extends Screen {
         }
     }
 
-    private FontRenderer getFontRenderer() {
+    private Font getFontRenderer() {
         return font;
     }
 
@@ -310,8 +311,8 @@ public final class ManualScreen extends Screen {
         private float currentX;
         private int targetX;
 
-        TabButton(final int x, final int y, final Tab tab, final IPressable action) {
-            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), StringTextComponent.EMPTY, action);
+        TabButton(final int x, final int y, final Tab tab, final OnPress action) {
+            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), TextComponent.EMPTY, action);
             this.tab = tab;
             this.baseX = x;
             this.currentX = x + screenStyle.getTabHoverShift();
@@ -319,27 +320,27 @@ public final class ManualScreen extends Screen {
         }
 
         @Override
-        public void renderToolTip(final MatrixStack matrixStack, final int mouseX, final int mouseY) {
+        public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
             if (!isHovered()) {
                 return;
             }
 
-            final List<ITextComponent> tooltip = new ArrayList<>();
+            final List<Component> tooltip = new ArrayList<>();
             tab.getTooltip(tooltip);
             if (!tooltip.isEmpty()) {
-                ManualScreen.this.renderWrappedToolTip(matrixStack, tooltip, mouseX, mouseY, getFontRenderer());
+                ManualScreen.this.renderComponentToolTip(matrixStack, tooltip, mouseX, mouseY, getFontRenderer());
             }
         }
 
         @Override
-        public void renderButton(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        public void renderButton(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
             if (isHovered()) {
                 targetX = baseX;
             } else {
                 targetX = baseX + screenStyle.getTabHoverShift();
             }
 
-            currentX = MathHelper.lerp(partialTicks * 0.5f, currentX, targetX);
+            currentX = Mth.lerp(partialTicks * 0.5f, currentX, targetX);
 
             if (currentX < targetX) {
                 x = (int) Math.ceil(currentX);
@@ -355,7 +356,8 @@ public final class ManualScreen extends Screen {
             final int textureWidth = screenStyle.getTabRect().getWidth();
             final int textureHeight = screenStyle.getTabRect().getHeight() * 2;
 
-            getMinecraft().getTextureManager().bind(screenStyle.getTabButtonTexture());
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, screenStyle.getTabButtonTexture());
             blit(matrixStack, x, y, 0, v0, visualWidth, visualHeight, textureWidth, textureHeight);
 
             matrixStack.pushPose();
@@ -367,7 +369,7 @@ public final class ManualScreen extends Screen {
         }
 
         @Override
-        public void playDownSound(final SoundHandler soundHandler) {
+        public void playDownSound(final SoundManager soundHandler) {
         }
     }
 
@@ -377,7 +379,7 @@ public final class ManualScreen extends Screen {
         private final int baseY;
 
         ScrollButton(final int x, final int y, final int w, final int h) {
-            super(x, y, w, h, StringTextComponent.EMPTY, (button) -> {});
+            super(x, y, w, h, TextComponent.EMPTY, (button) -> {});
             this.baseY = y;
         }
 
@@ -390,7 +392,7 @@ public final class ManualScreen extends Screen {
         }
 
         @Override
-        public void renderButton(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        public void renderButton(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
             y = baseY + getScrollButtonY();
 
             final int x0 = x;
@@ -403,11 +405,12 @@ public final class ManualScreen extends Screen {
             final float v0 = (isDragging || isHovered()) ? 0.5f : 0;
             final float v1 = v0 + 0.5f;
 
-            getMinecraft().getTextureManager().bind(screenStyle.getScrollButtonTexture());
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, screenStyle.getScrollButtonTexture());
 
-            final Tessellator t = Tessellator.getInstance();
+            final Tesselator t = Tesselator.getInstance();
             final BufferBuilder builder = t.getBuilder();
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             builder.vertex(x0, y1, getBlitOffset()).uv(u0, v1).endVertex();
             builder.vertex(x1, y1, getBlitOffset()).uv(u1, v1).endVertex();
             builder.vertex(x1, y0, getBlitOffset()).uv(u1, v0).endVertex();
@@ -416,11 +419,11 @@ public final class ManualScreen extends Screen {
         }
 
         @Override
-        public void renderToolTip(final MatrixStack matrixStack, final int mouseX, final int mouseY) {
+        public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
             if (!isDragging && !isHovered() && !isCoordinateOverScrollBar(mouseX, mouseY)) {
                 return;
             }
-            renderTooltip(matrixStack, new StringTextComponent(100 * getScrollPosition() / maxScrollPosition() + "%"),
+            renderTooltip(matrixStack, new TextComponent(100 * getScrollPosition() / maxScrollPosition() + "%"),
                 leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollBarRect().getWidth(),
                 y + (getHeight() + TOOLTIP_HEIGHT) / 2);
         }

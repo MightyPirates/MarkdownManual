@@ -3,14 +3,15 @@ package li.cil.manual.client.provider;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.prefab.provider.AbstractRendererProvider;
+import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,7 +32,7 @@ public final class TagRendererProvider extends AbstractRendererProvider {
 
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
-        final ITag<Item> tag = ItemTags.getAllTags().getTag(new ResourceLocation(data));
+        final Tag<Item> tag = ItemTags.getAllTags().getTag(new ResourceLocation(data));
         if (tag != null && !tag.getValues().isEmpty()) {
             return Optional.of(new ItemStackContentRenderer(tag
                 .getValues().stream()
