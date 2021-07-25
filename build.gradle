@@ -115,7 +115,7 @@ jar {
 
     manifest {
         attributes([
-            'Specification-Title'     : 'markdown_manual',
+            'Specification-Title'     : 'MarkdownManual',
             'Specification-Vendor'    : 'Sangar',
             'Specification-Version'   : '1',
             'Implementation-Title'    : project.name,
@@ -161,5 +161,13 @@ curseforge {
         addGameVersion 'Forge'
         addGameVersion minecraft_version
         addGameVersion 'Java 16'
+    }
+}
+
+idea {
+    module {
+        for (final String exclude in ['run', 'out', 'logs', 'src/generated']) {
+            excludeDirs += file(exclude)
+        }
     }
 }

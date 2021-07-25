@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -67,10 +67,10 @@ public final class ManualScreen extends Screen {
             final int x = screenStyle.getTabAreaRect().getX();
             final int y = screenStyle.getTabAreaRect().getY() + i * getTabClickableHeight();
             if (y + screenStyle.getTabRect().getHeight() > screenStyle.getTabAreaRect().getHeight()) return;
-            addWidget(new TabButton(leftPos + x, topPos + y, tab, (button) -> pushManualPage(tab)));
+            addRenderableWidget(new TabButton(leftPos + x, topPos + y, tab, (button) -> pushManualPage(tab)));
         });
 
-        scrollButton = addWidget(new ScrollButton(
+        scrollButton = addRenderableWidget(new ScrollButton(
             leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollButtonRect().getX(),
             topPos + screenStyle.getScrollBarRect().getY() + screenStyle.getScrollButtonRect().getY(),
             screenStyle.getScrollButtonRect().getWidth(),
@@ -125,9 +125,9 @@ public final class ManualScreen extends Screen {
         currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t ->
             renderComponentToolTip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
 
-        for (final Widget widget : this.renderables) {
+        for (final GuiEventListener widget : this.children()) {
             if (widget instanceof final AbstractWidget button) {
-                if (button.active && (!isDragging || widget instanceof ScrollButton)) {
+                if (button.active && (!isDragging || widget == scrollButton)) {
                     button.renderToolTip(matrixStack, mouseX, mouseY);
                 }
             }

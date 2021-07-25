@@ -15,7 +15,7 @@ Library mod providing a convenient way of defining in-game manuals.
 [[dependencies.markdown_manual]]
 modId = "forge"
 mandatory = true
-versionRange = "[37.0.0,)"
+versionRange = "[37.0.5,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.markdown_manual]]

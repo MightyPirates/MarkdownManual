@@ -16,8 +16,8 @@ import li.cil.manual.client.provider.TagRendererProvider;
 import li.cil.manual.client.provider.TextureRendererProvider;
 import li.cil.manual.client.util.RegistryUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,7 +63,7 @@ public final class ClientSetup {
         Minecraft.getInstance().setScreen(screen);
     }
 
-    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final RegistryKey<Registry<T>> key) {
+    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final ResourceKey<Registry<T>> key) {
         deferredRegister.makeRegistry(key.location().getPath(), () -> new RegistryBuilder<T>().disableSync().disableSaving());
     }
 }

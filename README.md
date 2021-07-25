@@ -100,7 +100,7 @@ To add a dependency to this mod for use in your mod, add the following to your `
 ```groovy
 repositories {
     maven {
-        url = "http://maven.cil.li/"
+        url = "https://maven.cil.li/"
     }
 }
 dependencies {
