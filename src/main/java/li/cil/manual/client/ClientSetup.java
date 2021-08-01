@@ -23,7 +23,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 
 @OnlyIn(Dist.CLIENT)
-public final class Bootstrap {
+public final class ClientSetup {
     public static void initialize() {
         final DeferredRegister<Tab> tabs = DeferredRegister.create(Tab.class, Constants.MOD_ID);
         final DeferredRegister<PathProvider> pathProviders = DeferredRegister.create(PathProvider.class, Constants.MOD_ID);
@@ -48,7 +48,7 @@ public final class Bootstrap {
         tabs.register(FMLJavaModLoadingContext.get().getModEventBus());
         manuals.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-        MinecraftForge.EVENT_BUS.addListener(Bootstrap::handleShowManualScreen);
+        MinecraftForge.EVENT_BUS.addListener(ClientSetup::handleShowManualScreen);
     }
 
     private static void handleShowManualScreen(final ShowManualScreenEvent event) {
