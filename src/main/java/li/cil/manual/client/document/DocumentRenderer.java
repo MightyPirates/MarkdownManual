@@ -5,8 +5,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.content.Document;
+import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.segment.*;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,6 +43,7 @@ import java.util.regex.Pattern;
 public final class DocumentRenderer {
     private final ManualModel manual;
     private final ManualStyle style;
+    @Nullable private ResourceLocation location;
     @Nullable private Segment root;
     @Nullable private InteractiveSegment lastHovered;
 
@@ -53,7 +57,7 @@ public final class DocumentRenderer {
      * @param style  the fonts to use when rendering the generated segments.
      * @param manual the manual the document belongs to.
      */
-    public Document(final ManualStyle style, final ManualModel manual) {
+    public DocumentRenderer(final ManualStyle style, final ManualModel manual) {
         this.manual = manual;
         this.style = style;
     }
@@ -65,10 +69,12 @@ public final class DocumentRenderer {
      *
      * @param document iterator over the lines of the document to parse.
      */
-    public void parse(final Iterable<String> document) {
+    public void parse(final Document document) {
+        location = document.getLocation();
+
         // Get top-level list of text segments.
         List<Segment> segments = new ArrayList<>();
-        for (final String line : document) {
+        for (final String line : document.getLines()) {
             segments.add(new TextSegment(manual, style, null, StringUtils.stripEnd(line, null)));
         }
 
@@ -297,10 +303,22 @@ public final class DocumentRenderer {
         return new StrikethroughSegment(m, f, s, t.group(1));
     }
 
-    private static Segment ImageSegment(final ManualModel m, final ManualStyle f, final Segment s, final Matcher t) {
+    private Segment ImageSegment(final ManualModel m, final ManualStyle f, final Segment s, final Matcher t) {
         final String title = t.group(1);
         final String url = t.group(2);
-        final Optional<ContentRenderer> renderer = m.imageFor(url);
+        final String path;
+        if (url.contains(":")) {
+            // Namespaced URL, don't try to resolve as relative.
+            path = url;
+        } else if (location != null) {
+            // We know where we are, try to resolve path.
+            path = PathUtils.resolve(location.toString(), url);
+        } else {
+            // No reference, use as-is.
+            path = url;
+        }
+
+        final Optional<ContentRenderer> renderer = manual.imageFor(path);
         if (renderer.isPresent()) {
             return new RenderSegment(m, f, s, new StringTextComponent(title), renderer.get());
         } else {
@@ -308,10 +326,10 @@ public final class DocumentRenderer {
         }
     }
 
-    private static final PatternMapping[] SEGMENT_TYPES = new PatternMapping[]{
+    private final PatternMapping[] SEGMENT_TYPES = new PatternMapping[]{
         new PatternMapping("^(#+)\\s(.*)", DocumentRenderer::HeaderSegment), // headers: # ...
         new PatternMapping("(`)(.*?)\\1", DocumentRenderer::CodeSegment), // code: `...`
-        new PatternMapping("!\\[([^\\[]*)\\]\\(([^\\)]+)\\)", DocumentRenderer::ImageSegment), // images: ![...](...)
+        new PatternMapping("!\\[([^\\[]*)\\]\\(([^\\)]+)\\)", this::ImageSegment), // images: ![...](...)
         new PatternMapping("\\[([^\\[]+)\\]\\(([^\\)]+)\\)", DocumentRenderer::LinkSegment), // links: [...](...)
         new PatternMapping("(\\*\\*|__)(\\S.*?\\S|$)\\1", DocumentRenderer::BoldSegment), // bold: **...** | __...__
         new PatternMapping("(\\*|_)(\\S.*?\\S|$)\\1", DocumentRenderer::ItalicSegment), // italic: *...* | _..._

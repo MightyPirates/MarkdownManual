@@ -3,6 +3,7 @@ package li.cil.manual.api.util;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.Tab;
 import li.cil.manual.api.provider.ContentProvider;
+import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
 import li.cil.manual.api.provider.RendererProvider;
 import net.minecraft.util.RegistryKey;
@@ -14,11 +15,17 @@ public final class Constants {
 
     // ----------------------------------------------------------------------- //
 
-    public static final RegistryKey<Registry<ContentProvider>> CONTENT_PROVIDERS = key("content_providers");
     public static final RegistryKey<Registry<PathProvider>> PATH_PROVIDERS = key("path_providers");
+    public static final RegistryKey<Registry<DocumentProvider>> DOCUMENT_PROVIDERS = key("document_providers");
     public static final RegistryKey<Registry<RendererProvider>> RENDERER_PROVIDERS = key("renderer_providers");
     public static final RegistryKey<Registry<Tab>> TABS = key("tabs");
     public static final RegistryKey<Registry<ManualModel>> MANUALS = key("manuals");
+
+    /**
+     * @deprecated Use {@link DocumentProvider}s and the {@link #DOCUMENT_PROVIDERS} registry.
+     */
+    @Deprecated
+    public static final RegistryKey<Registry<ContentProvider>> CONTENT_PROVIDERS = key("content_providers");
 
     // ----------------------------------------------------------------------- //
 

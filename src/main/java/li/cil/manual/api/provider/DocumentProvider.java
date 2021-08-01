@@ -1,25 +1,23 @@
 package li.cil.manual.api.provider;
 
+import li.cil.manual.api.content.Document;
 import li.cil.manual.api.prefab.provider.NamespaceContentProvider;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
- * This interface allows implementation of content providers for the manual.
+ * This interface allows implementation of document providers for the manual.
  * <p>
- * Content providers can be used to provide possibly dynamic page content for
+ * Document providers can be used to provide (optionally dynamic) page content for
  * arbitrary paths.
  *
  * @see NamespaceContentProvider
- * @deprecated Implement the {@link DocumentProvider} interface instead.
  */
 @OnlyIn(Dist.CLIENT)
-@Deprecated
-public interface ContentProvider extends MarkdownManualRegistryEntry<ContentProvider> {
+public interface DocumentProvider extends MarkdownManualRegistryEntry<DocumentProvider> {
     /**
      * Called to get the content of a path pointed to by the specified path.
      * <p>
@@ -34,5 +32,5 @@ public interface ContentProvider extends MarkdownManualRegistryEntry<ContentProv
      * @param language the language of the content to look up.
      * @return the content of the document at that path, or {@code null}.
      */
-    Optional<Stream<String>> getContent(final String path, final String language);
+    Optional<Document> getDocument(final String path, final String language);
 }

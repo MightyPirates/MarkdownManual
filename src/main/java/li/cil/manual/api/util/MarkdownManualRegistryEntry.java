@@ -1,7 +1,7 @@
 package li.cil.manual.api.util;
 
 import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.provider.ContentProvider;
+import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
 import li.cil.manual.api.provider.RendererProvider;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +10,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.Objects;
 
 /**
- * This is used when associating various registry objects, such as {@link ContentProvider}s,
+ * This is used when associating various registry objects, such as {@link DocumentProvider}s,
  * {@link PathProvider}s and {@link RendererProvider}s with manuals that may need some particular
  * order in which they are queried, e.g. to overwrite some other existing provider.
  *
@@ -35,7 +35,7 @@ public interface MarkdownManualRegistryEntry<T> extends IForgeRegistryEntry<T>, 
      * The sort order of this instance.
      * <p>
      * Registry entries are sorted using this order before being queried. For example,
-     * this may be used by {@link ContentProvider}s to replace a more generic
+     * this may be used by {@link DocumentProvider}s to replace a more generic
      * default provider.
      *
      * @return the sort order of this instance.

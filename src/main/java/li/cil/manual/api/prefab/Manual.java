@@ -1,11 +1,11 @@
 package li.cil.manual.api.prefab;
 
-import com.google.common.io.Files;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.Tab;
+import li.cil.manual.api.content.Document;
 import li.cil.manual.api.render.ContentRenderer;
-import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import li.cil.manual.api.util.Constants;
+import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.Strings;
 import net.minecraft.client.Minecraft;
@@ -78,10 +78,10 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      * {@inheritDoc}
      */
     @Override
-    public Optional<Iterable<String>> contentFor(final String path) {
+    public Optional<Document> documentFor(final String path) {
         final String language = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
-        final Optional<Iterable<String>> content = contentFor(path.replace(LANGUAGE_KEY, language), language, new LinkedHashSet<>());
-        return content.isPresent() ? content : contentFor(path.replace(LANGUAGE_KEY, FALLBACK_LANGUAGE), FALLBACK_LANGUAGE, new LinkedHashSet<>());
+        final Optional<Document> content = documentFor(path.replace(LANGUAGE_KEY, language), language, new LinkedHashSet<>());
+        return content.isPresent() ? content : documentFor(path.replace(LANGUAGE_KEY, FALLBACK_LANGUAGE), FALLBACK_LANGUAGE, new LinkedHashSet<>());
     }
 
     /**
@@ -209,38 +209,51 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
         return PathUtils.resolve(base, path);
     }
 
+    /**
+     * @deprecated Override {@link #documentFor(String, String, Set)} instead.
+     */
+    @Deprecated
     protected Optional<Iterable<String>> contentFor(final String path, final String language, final Set<String> seen) {
+        return Optional.empty();
+    }
+
+    /**
+     * Loads the document from the specified path, in the specified language.
+     * <p>
+     * This method may perform additional processing on the loaded documents. The default implementation
+     * will resolve redirects and trim leading and trailing blank lines.
+     *
+     * @param path     the path of the document to load.
+     * @param language the language of the document to load.
+     * @param seen     a set of already seen documents in the loading process, used to break cycles in redirects.
+     * @return the loaded document.
+     */
+    protected Optional<Document> documentFor(final String path, final String language, final Set<String> seen) {
         if (!seen.add(path)) {
             final List<String> message = new ArrayList<>();
             message.add(Strings.getRedirectionLoopText());
             message.addAll(seen);
             message.add(path);
-            return Optional.of(message);
+            return Optional.of(new Document(message));
         }
 
-        final Optional<List<String>> content = find(Constants.CONTENT_PROVIDERS, provider -> provider.getContent(path, language)).
-            map(lines -> {
-                final List<String> list = lines.collect(Collectors.toList());
-                while (!list.isEmpty() && StringUtils.isWhitespace(list.get(0))) {
-                    list.remove(0);
-                }
-                while (!list.isEmpty() && StringUtils.isWhitespace(list.get(list.size() - 1))) {
-                    list.remove(list.size() - 1);
-                }
-                return list;
-            });
-        if (!content.isPresent()) {
-            return Optional.empty(); // Page not found.
-        }
+        return find(Constants.DOCUMENT_PROVIDERS, provider -> provider.getDocument(path, language)).flatMap(document -> {
+            // Read first line only to check for redirect.
+            final List<String> lines = document.getLines();
+            if (!lines.isEmpty() && lines.get(0).toLowerCase().startsWith(REDIRECT_PRAGMA)) {
+                final String redirectPath = lines.get(0).substring(REDIRECT_PRAGMA.length()).trim();
+                return documentFor(PathUtils.resolve(path, redirectPath), language, seen);
+            }
 
-        // Read first line only.
-        final List<String> lines = content.get();
-        if (lines.size() > 0 && lines.get(0).toLowerCase().startsWith(REDIRECT_PRAGMA)) {
-            final String redirectPath = lines.get(0).substring(REDIRECT_PRAGMA.length()).trim();
-            return contentFor(resolve(path, redirectPath), language, seen);
-        }
-
-        return Optional.of(lines); // Regular page.
+            // Trim leading and trailing blank lines. Mostly for the trailing ones, to avoid scrolling being weird.
+            while (!lines.isEmpty() && StringUtils.isWhitespace(lines.get(0))) {
+                lines.remove(0);
+            }
+            while (!lines.isEmpty() && StringUtils.isWhitespace(lines.get(lines.size() - 1))) {
+                lines.remove(lines.size() - 1);
+            }
+            return Optional.of(document);
+        });
     }
 
     // --------------------------------------------------------------------- //

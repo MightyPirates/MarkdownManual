@@ -1,7 +1,8 @@
 package li.cil.manual.api.prefab.provider;
 
 import com.google.common.base.Charsets;
-import li.cil.manual.api.provider.ContentProvider;
+import li.cil.manual.api.content.Document;
+import li.cil.manual.api.provider.DocumentProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -14,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Basic implementation of a content provider based on Minecraft's resource
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  * as seen from the manual.
  */
 @OnlyIn(Dist.CLIENT)
-public class NamespaceContentProvider extends ForgeRegistryEntry<ContentProvider> implements ContentProvider {
+public class NamespaceContentProvider extends ForgeRegistryEntry<DocumentProvider> implements DocumentProvider {
     private final String namespace;
     private final String basePath;
 
@@ -39,7 +39,7 @@ public class NamespaceContentProvider extends ForgeRegistryEntry<ContentProvider
     }
 
     @Override
-    public Optional<Stream<String>> getContent(final String path, final String language) {
+    public Optional<Document> getDocument(final String path, final String language) {
         final IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         final ResourceLocation location = new ResourceLocation(namespace, basePath + path);
         try (final InputStream stream = resourceManager.getResource(location).getInputStream()) {
@@ -49,7 +49,7 @@ public class NamespaceContentProvider extends ForgeRegistryEntry<ContentProvider
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-            return Optional.of(lines.stream());
+            return Optional.of(new Document(lines, location));
         } catch (final Throwable ignored) {
             return Optional.empty();
         }

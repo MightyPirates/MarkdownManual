@@ -1,5 +1,7 @@
 package li.cil.manual.api;
 
+import com.google.common.collect.Lists;
+import li.cil.manual.api.content.Document;
 import li.cil.manual.api.prefab.Manual;
 import li.cil.manual.api.prefab.item.AbstractManualItem;
 import li.cil.manual.api.provider.RendererProvider;
@@ -74,9 +76,27 @@ public interface ManualModel extends IForgeRegistryEntry<ManualModel> {
      * {@link Manual#FALLBACK_LANGUAGE}.
      *
      * @param path the path of the page to get the content of.
-     * @return the content of the page, or {@code null} if none exists.
+     * @return the content of the page, or {@link Optional#empty()} if none exists.
+     * @deprecated Use {@link #documentFor(String)} instead.
      */
-    Optional<Iterable<String>> contentFor(String path);
+    @Deprecated
+    default Optional<Iterable<String>> contentFor(final String path) {
+        return Optional.empty();
+    }
+
+    /**
+     * Get the document at the specified location.
+     * <p>
+     * The provided path may contain the special variable {@link Manual#LANGUAGE_KEY},
+     * which will be resolved to the currently set language, falling back to
+     * {@link Manual#FALLBACK_LANGUAGE}.
+     *
+     * @param path the path of the page to get the content of.
+     * @return the document, or {@link Optional#empty()} if none exists.
+     */
+    default Optional<Document> documentFor(final String path) {
+        return contentFor(path).map(lines -> new Document(Lists.newArrayList(lines)));
+    }
 
     /**
      * Get the image renderer for the specified image path.

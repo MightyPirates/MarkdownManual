@@ -6,6 +6,7 @@ import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualScreenStyle;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.Tab;
+import li.cil.manual.api.content.Document;
 import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.segment.InteractiveSegment;
 import li.cil.manual.client.util.IterableUtils;
@@ -244,8 +245,8 @@ public final class ManualScreen extends Screen {
     }
 
     private void refreshPage() {
-        final Optional<Iterable<String>> content = model.contentFor(model.peek());
-        documentRenderer.parse(content.orElse(Collections.singleton("Page not found: " + model.peek())));
+        final Optional<Document> document = model.documentFor(model.peek());
+        documentRenderer.parse(document.orElse(new Document(Collections.singletonList("Page not found: " + model.peek()))));
         documentHeight = documentRenderer.height(screenStyle.getDocumentRect().getWidth());
         scrollPos = getScrollPosition() - manualStyle.getLineHeight() * 3;
     }
