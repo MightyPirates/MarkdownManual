@@ -3,10 +3,15 @@ package li.cil.manual.client.document.segment;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
+import li.cil.manual.api.util.PathUtils;
+import li.cil.manual.client.document.DocumentRenderTypes;
 import li.cil.manual.client.document.DocumentRenderer;
-import net.minecraft.client.gui.screen.Screen;
+import li.cil.manual.client.document.Strings;
+import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,10 +24,24 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
     // --------------------------------------------------------------------- //
 
-    public RenderSegment(final DocumentRenderer document, final Segment parent, final ITextComponent title, final ContentRenderer renderer) {
+    public RenderSegment(final DocumentRenderer document, final Segment parent, final String title, final String url) {
         super(document, parent);
-        this.title = title;
-        this.renderer = renderer;
+        this.title = new StringTextComponent(title);
+
+        final String path;
+        if (url.contains(":")) {
+            // Namespaced URL, don't try to resolve as relative.
+            path = url;
+        } else if (document.getLocation() != null) {
+            // We know where we are, try to resolve path.
+            path = PathUtils.resolve(document.getLocation().toString(), url);
+        } else {
+            // No reference, use as-is.
+            path = url;
+        }
+
+        final Optional<ContentRenderer> renderer = model.imageFor(path);
+        this.renderer = renderer.orElseGet(() -> new MissingContentRenderer(Strings.getMissingContentText(url)));
     }
 
     // --------------------------------------------------------------------- //
@@ -67,7 +86,16 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
         final boolean isHovered = mouseX >= x && mouseX <= x + width &&
                                   mouseY >= y && mouseY <= y + height;
         if (isHovered) {
-            Screen.fill(matrixStack, 0, 0, renderer.getWidth(), renderer.getHeight(), 0x40336699);
+            DocumentRenderTypes.draw(DocumentRenderTypes.highlight(), (buffer) -> {
+                final Matrix4f matrix = matrixStack.last().pose();
+
+                final float r = 0.2f, g = 0.4f, b = 0.6f, a = 0.25f;
+
+                buffer.vertex(matrix, 0, renderer.getHeight(), 0).color(r, g, b, a).endVertex();
+                buffer.vertex(matrix, renderer.getWidth(), renderer.getHeight(), 0).color(r, g, b, a).endVertex();
+                buffer.vertex(matrix, renderer.getWidth(), 0, 0).color(r, g, b, a).endVertex();
+                buffer.vertex(matrix, 0, 0, 0).color(r, g, b, a).endVertex();
+            });
         }
 
         renderer.render(matrixStack, mouseX, mouseY);

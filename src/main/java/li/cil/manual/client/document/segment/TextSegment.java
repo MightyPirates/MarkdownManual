@@ -84,7 +84,7 @@ public class TextSegment extends AbstractSegment {
         final ObjectReference<Optional<InteractiveSegment>> hovered = new ObjectReference<>(Optional.empty());
 
         final BufferBuilder builder = Tessellator.getInstance().getBuilder();
-        final IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(builder);
+        final IRenderTypeBuffer.Impl bufferSource = IRenderTypeBuffer.immediate(builder);
 
         forEachBlock(segmentX, lineHeight, documentWidth, block -> {
             final int blockWidth = getStringWidth(block.chars);
@@ -99,12 +99,12 @@ public class TextSegment extends AbstractSegment {
             matrixStack.translate(block.x, block.y, 0);
             matrixStack.scale(scale, scale, scale);
 
-            getFont().drawBatch(matrixStack, buffer, format + block.chars, color);
+            getFont().drawBatch(matrixStack, bufferSource, format + block.chars, color);
 
             matrixStack.popPose();
         });
 
-        buffer.endBatch();
+        bufferSource.endBatch();
 
         return hovered.value;
     }

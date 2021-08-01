@@ -11,8 +11,8 @@ public final class Strings {
     public static final ITextComponent NO_SUCH_BLOCK = new TranslationTextComponent(Constants.MOD_ID + ".warning.missing.block");
     public static final ITextComponent NO_SUCH_TAG = new TranslationTextComponent(Constants.MOD_ID + ".warning.missing.tag");
 
-    public static String getMissingContentText(final String url) {
-        return I18n.get(Constants.MOD_ID + ".warning.missing.content_render", url);
+    public static ITextComponent getMissingContentText(final String url) {
+        return new TranslationTextComponent(Constants.MOD_ID + ".warning.missing.content_renderer", url);
     }
 
     public static String getRedirectionLoopText() {
