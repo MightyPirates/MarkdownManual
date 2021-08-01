@@ -1,8 +1,8 @@
 package li.cil.manual.client.provider;
 
 import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.provider.RendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.provider.RendererProvider;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import li.cil.manual.client.document.segment.render.TextureContentRenderer;
