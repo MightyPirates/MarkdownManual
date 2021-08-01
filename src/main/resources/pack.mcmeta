@@ -1,6 +1,6 @@
 {
-   "pack": {
-      "pack_format": 4,
-      "description": "Markdown Manual mod resource pack"
-   }
+    "pack": {
+        "description": "Markdown Manual Resources",
+        "pack_format": 6
+    }
 }
