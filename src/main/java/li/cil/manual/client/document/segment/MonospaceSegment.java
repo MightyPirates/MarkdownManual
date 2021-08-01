@@ -1,8 +1,8 @@
 package li.cil.manual.client.document.segment;
 
 import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.api.ManualStyle;
+import li.cil.manual.api.render.FontRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -2,8 +2,8 @@ package li.cil.manual.client.provider;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.ManualModel;
+import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.prefab.provider.AbstractRendererProvider;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
