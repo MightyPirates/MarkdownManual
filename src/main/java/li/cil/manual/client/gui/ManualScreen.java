@@ -55,7 +55,7 @@ public final class ManualScreen extends Screen {
         this.model = model;
         this.manualStyle = manualStyle;
         this.screenStyle = screenStyle;
-        this.documentRenderer = new DocumentRenderer(manualStyle, model);
+        this.documentRenderer = new DocumentRenderer(model, manualStyle);
     }
 
     @Override

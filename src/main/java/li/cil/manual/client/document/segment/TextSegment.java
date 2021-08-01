@@ -1,9 +1,8 @@
 package li.cil.manual.client.document.segment;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.render.FontRenderer;
+import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
@@ -36,8 +35,8 @@ public class TextSegment extends AbstractSegment {
 
     // ----------------------------------------------------------------------- //
 
-    public TextSegment(final ManualModel manual, final ManualStyle style, @Nullable final Segment parent, final String text) {
-        super(manual, style, parent);
+    public TextSegment(final DocumentRenderer document, @Nullable final Segment parent, final String text) {
+        super(document, parent);
         this.text = text;
     }
 
@@ -120,19 +119,19 @@ public class TextSegment extends AbstractSegment {
         while (matcher.find()) {
             // Create segment for leading plain text.
             if (matcher.start() > textStart) {
-                result.add(new TextSegment(manual, style, this, text.substring(textStart, matcher.start())));
+                result.add(new TextSegment(document, this, text.substring(textStart, matcher.start())));
             }
             textStart = matcher.end();
 
             // Create segment for formatted text.
-            result.add(factory.refine(manual, style, this, matcher));
+            result.add(factory.refine(document, this, matcher));
         }
 
         // Create segment for remaining plain text.
         if (textStart == 0) {
             result.add(this);
         } else if (textStart < text.length()) {
-            result.add(new TextSegment(manual, style, this, text.substring(textStart)));
+            result.add(new TextSegment(document, this, text.substring(textStart)));
         }
         return result;
     }

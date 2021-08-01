@@ -1,15 +1,14 @@
 package li.cil.manual.client.document.segment;
 
-import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.ManualStyle;
+import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public final class StrikethroughSegment extends TextSegment {
-    public StrikethroughSegment(final ManualModel manual, final ManualStyle style, final Segment parent, final String text) {
-        super(manual, style, parent, text);
+    public StrikethroughSegment(final DocumentRenderer document, final Segment parent, final String text) {
+        super(document, parent, text);
     }
 
     // --------------------------------------------------------------------- //

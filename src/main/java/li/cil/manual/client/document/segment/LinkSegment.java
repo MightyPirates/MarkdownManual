@@ -1,7 +1,6 @@
 package li.cil.manual.client.document.segment;
 
-import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.ManualStyle;
+import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -25,11 +24,11 @@ public final class LinkSegment extends TextSegment implements InteractiveSegment
 
     // --------------------------------------------------------------------- //
 
-    public LinkSegment(final ManualModel manual, final ManualStyle style, final Segment parent, final String text, final String url) {
-        super(manual, style, parent, text);
+    public LinkSegment(final DocumentRenderer document, final Segment parent, final String text, final String url) {
+        super(document, parent, text);
         this.url = url;
         this.isWebUrl = url.startsWith("http://") || url.startsWith("https://");
-        this.isLinkValid = isWebUrl || manual.contentFor(manual.resolve(url)).isPresent();
+        this.isLinkValid = isWebUrl || model.contentFor(model.resolve(url)).isPresent();
     }
 
     // --------------------------------------------------------------------- //
@@ -48,7 +47,7 @@ public final class LinkSegment extends TextSegment implements InteractiveSegment
         if (isWebUrl) {
             Util.getPlatform().openUri(url);
         } else {
-            manual.push(manual.resolve(url));
+            model.push(model.resolve(url));
         }
         return true;
     }

@@ -1,10 +1,9 @@
 package li.cil.manual.client.document.segment;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
+import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -20,8 +19,8 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
     // --------------------------------------------------------------------- //
 
-    public RenderSegment(final ManualModel manual, final ManualStyle style, final Segment parent, final ITextComponent title, final ContentRenderer renderer) {
-        super(manual, style, parent);
+    public RenderSegment(final DocumentRenderer document, final Segment parent, final ITextComponent title, final ContentRenderer renderer) {
+        super(document, parent);
         this.title = title;
         this.renderer = renderer;
     }

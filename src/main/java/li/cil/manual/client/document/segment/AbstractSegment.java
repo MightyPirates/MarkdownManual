@@ -2,6 +2,7 @@ package li.cil.manual.client.document.segment;
 
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
+import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -12,16 +13,18 @@ import java.util.regex.Pattern;
 
 @OnlyIn(Dist.CLIENT)
 abstract class AbstractSegment implements Segment {
-    protected final ManualModel manual;
+    protected final DocumentRenderer document;
+    protected final ManualModel model;
     protected final ManualStyle style;
     @Nullable private final Segment parent;
     protected Segment next;
 
     // --------------------------------------------------------------------- //
 
-    protected AbstractSegment(final ManualModel manual, final ManualStyle style, @Nullable final Segment parent) {
-        this.manual = manual;
-        this.style = style;
+    protected AbstractSegment(final DocumentRenderer document, @Nullable final Segment parent) {
+        this.document = document;
+        this.model = document.getModel();
+        this.style = document.getStyle();
         this.parent = parent;
     }
 
