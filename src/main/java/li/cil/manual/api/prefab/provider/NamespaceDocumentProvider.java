@@ -25,16 +25,16 @@ import java.util.Optional;
  * as seen from the manual.
  */
 @OnlyIn(Dist.CLIENT)
-public class NamespaceContentProvider extends ForgeRegistryEntry<DocumentProvider> implements DocumentProvider {
+public class NamespaceDocumentProvider extends ForgeRegistryEntry<DocumentProvider> implements DocumentProvider {
     private final String namespace;
     private final String basePath;
 
-    public NamespaceContentProvider(final String namespace, final String basePath) {
+    public NamespaceDocumentProvider(final String namespace, final String basePath) {
         this.namespace = namespace;
         this.basePath = basePath.endsWith("/") ? basePath : (basePath + "/");
     }
 
-    public NamespaceContentProvider(final String namespace) {
+    public NamespaceDocumentProvider(final String namespace) {
         this(namespace, "");
     }
 

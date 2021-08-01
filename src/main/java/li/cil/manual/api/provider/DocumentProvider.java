@@ -1,7 +1,7 @@
 package li.cil.manual.api.provider;
 
 import li.cil.manual.api.content.Document;
-import li.cil.manual.api.prefab.provider.NamespaceContentProvider;
+import li.cil.manual.api.prefab.provider.NamespaceDocumentProvider;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * Document providers can be used to provide (optionally dynamic) page content for
  * arbitrary paths.
  *
- * @see NamespaceContentProvider
+ * @see NamespaceDocumentProvider
  */
 @OnlyIn(Dist.CLIENT)
 public interface DocumentProvider extends MarkdownManualRegistryEntry<DocumentProvider> {
