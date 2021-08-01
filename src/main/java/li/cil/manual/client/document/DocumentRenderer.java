@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * nodes, up to the root.
  */
 @OnlyIn(Dist.CLIENT)
-public final class Document {
+public final class DocumentRenderer {
     private final ManualModel manual;
     private final ManualStyle style;
     @Nullable private Segment root;
@@ -309,13 +309,13 @@ public final class Document {
     }
 
     private static final PatternMapping[] SEGMENT_TYPES = new PatternMapping[]{
-        new PatternMapping("^(#+)\\s(.*)", Document::HeaderSegment), // headers: # ...
-        new PatternMapping("(`)(.*?)\\1", Document::CodeSegment), // code: `...`
-        new PatternMapping("!\\[([^\\[]*)\\]\\(([^\\)]+)\\)", Document::ImageSegment), // images: ![...](...)
-        new PatternMapping("\\[([^\\[]+)\\]\\(([^\\)]+)\\)", Document::LinkSegment), // links: [...](...)
-        new PatternMapping("(\\*\\*|__)(\\S.*?\\S|$)\\1", Document::BoldSegment), // bold: **...** | __...__
-        new PatternMapping("(\\*|_)(\\S.*?\\S|$)\\1", Document::ItalicSegment), // italic: *...* | _..._
-        new PatternMapping("~~(\\S.*?\\S|$)~~", Document::StrikethroughSegment) // strikethrough: ~~...~~
+        new PatternMapping("^(#+)\\s(.*)", DocumentRenderer::HeaderSegment), // headers: # ...
+        new PatternMapping("(`)(.*?)\\1", DocumentRenderer::CodeSegment), // code: `...`
+        new PatternMapping("!\\[([^\\[]*)\\]\\(([^\\)]+)\\)", DocumentRenderer::ImageSegment), // images: ![...](...)
+        new PatternMapping("\\[([^\\[]+)\\]\\(([^\\)]+)\\)", DocumentRenderer::LinkSegment), // links: [...](...)
+        new PatternMapping("(\\*\\*|__)(\\S.*?\\S|$)\\1", DocumentRenderer::BoldSegment), // bold: **...** | __...__
+        new PatternMapping("(\\*|_)(\\S.*?\\S|$)\\1", DocumentRenderer::ItalicSegment), // italic: *...* | _..._
+        new PatternMapping("~~(\\S.*?\\S|$)~~", DocumentRenderer::StrikethroughSegment) // strikethrough: ~~...~~
     };
 
     private static final class PatternMapping {

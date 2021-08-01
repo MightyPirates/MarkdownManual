@@ -6,7 +6,7 @@ import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualScreenStyle;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.Tab;
-import li.cil.manual.client.document.Document;
+import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.segment.InteractiveSegment;
 import li.cil.manual.client.util.IterableUtils;
 import net.minecraft.client.Minecraft;
@@ -36,7 +36,7 @@ public final class ManualScreen extends Screen {
     private final ManualModel model;
     private final ManualStyle manualStyle;
     private final ManualScreenStyle screenStyle;
-    private final Document document;
+    private final DocumentRenderer documentRenderer;
     private String currentPath;
 
     private int leftPos = 0;
@@ -54,7 +54,7 @@ public final class ManualScreen extends Screen {
         this.model = model;
         this.manualStyle = manualStyle;
         this.screenStyle = screenStyle;
-        this.document = new Document(manualStyle, model);
+        this.documentRenderer = new DocumentRenderer(manualStyle, model);
     }
 
     @Override
@@ -116,7 +116,7 @@ public final class ManualScreen extends Screen {
         matrixStack.pushPose();
         matrixStack.translate(documentX, documentY, 0);
 
-        currentSegment = document.render(matrixStack, getSmoothScrollPosition(),
+        currentSegment = documentRenderer.render(matrixStack, getSmoothScrollPosition(),
             documentRect.getWidth(), documentRect.getHeight(),
             mouseX - documentX, mouseY - documentY);
 
@@ -245,8 +245,8 @@ public final class ManualScreen extends Screen {
 
     private void refreshPage() {
         final Optional<Iterable<String>> content = model.contentFor(model.peek());
-        document.parse(content.orElse(Collections.singleton("Page not found: " + model.peek())));
-        documentHeight = document.height(screenStyle.getDocumentRect().getWidth());
+        documentRenderer.parse(content.orElse(Collections.singleton("Page not found: " + model.peek())));
+        documentHeight = documentRenderer.height(screenStyle.getDocumentRect().getWidth());
         scrollPos = getScrollPosition() - manualStyle.getLineHeight() * 3;
     }
 
