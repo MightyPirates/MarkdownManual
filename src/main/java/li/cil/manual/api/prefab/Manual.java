@@ -6,6 +6,7 @@ import li.cil.manual.api.Tab;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import li.cil.manual.api.util.Constants;
+import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -166,7 +167,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public String resolve(final String path) {
-        return resolve(peek(), path);
+        return PathUtils.resolve(peek(), path);
     }
 
     /**
@@ -200,21 +201,12 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
             sorted().map(lookup).filter(Optional::isPresent).findFirst().flatMap(x -> x);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
+    /**
+     * @deprecated Use {@link PathUtils#resolve(String, String)} instead.
+     */
+    @Deprecated
     protected String resolve(final String base, final String path) {
-        final String absolutePath;
-        if (path.startsWith("/")) {
-            absolutePath = StringUtils.stripStart(path, "/");
-        } else {
-            final int lastSlash = base.lastIndexOf('/');
-            if (lastSlash >= 0) {
-                absolutePath = base.substring(0, lastSlash + 1) + path;
-            } else {
-                absolutePath = path;
-            }
-        }
-
-        return Files.simplifyPath(absolutePath);
+        return PathUtils.resolve(base, path);
     }
 
     protected Optional<Iterable<String>> contentFor(final String path, final String language, final Set<String> seen) {
