@@ -5,12 +5,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.content.Document;
-import li.cil.manual.api.render.ContentRenderer;
-import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.segment.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
@@ -68,6 +65,11 @@ public final class DocumentRenderer {
 
     public ManualStyle getStyle() {
         return style;
+    }
+
+    @Nullable
+    public ResourceLocation getLocation() {
+        return location;
     }
 
     /**
@@ -190,6 +192,8 @@ public final class DocumentRenderer {
         Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0);
         matrixStack.popPose();
 
+        RenderSystem.enableAlphaTest();
+
         // Actual rendering.
         final boolean isMouseOverDocument = mouseX >= 0 || mouseX <= width || mouseY >= 0 || mouseY <= height;
         Optional<InteractiveSegment> hovered = Optional.empty();
@@ -262,7 +266,6 @@ public final class DocumentRenderer {
         setHoveredSegment(hovered.orElse(null));
 
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
-        RenderSystem.enableAlphaTest();
 
         return hovered;
     }
@@ -312,26 +315,7 @@ public final class DocumentRenderer {
     }
 
     private static Segment ImageSegment(final DocumentRenderer d, final Segment s, final Matcher t) {
-        final String title = t.group(1);
-        final String url = t.group(2);
-        final String path;
-        if (url.contains(":")) {
-            // Namespaced URL, don't try to resolve as relative.
-            path = url;
-        } else if (d.location != null) {
-            // We know where we are, try to resolve path.
-            path = PathUtils.resolve(d.location.toString(), url);
-        } else {
-            // No reference, use as-is.
-            path = url;
-        }
-
-        final Optional<ContentRenderer> renderer = d.model.imageFor(path);
-        if (renderer.isPresent()) {
-            return new RenderSegment(d, s, new StringTextComponent(title), renderer.get());
-        } else {
-            return new TextSegment(d, s, Strings.getMissingContentText(url));
-        }
+        return new RenderSegment(d, s, t.group(1), t.group(2));
     }
 
     private static final PatternMapping[] SEGMENT_TYPES = new PatternMapping[]{
