@@ -28,7 +28,7 @@ public final class LinkSegment extends TextSegment implements InteractiveSegment
         super(document, parent, text);
         this.url = url;
         this.isWebUrl = url.startsWith("http://") || url.startsWith("https://");
-        this.isLinkValid = isWebUrl || model.contentFor(model.resolve(url)).isPresent();
+        this.isLinkValid = isWebUrl || model.documentFor(model.resolve(url)).isPresent();
     }
 
     // --------------------------------------------------------------------- //

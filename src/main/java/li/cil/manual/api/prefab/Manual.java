@@ -202,22 +202,6 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
     }
 
     /**
-     * @deprecated Use {@link PathUtils#resolve(String, String)} instead.
-     */
-    @Deprecated
-    protected String resolve(final String base, final String path) {
-        return PathUtils.resolve(base, path);
-    }
-
-    /**
-     * @deprecated Override {@link #documentFor(String, String, Set)} instead.
-     */
-    @Deprecated
-    protected Optional<Iterable<String>> contentFor(final String path, final String language, final Set<String> seen) {
-        return Optional.empty();
-    }
-
-    /**
      * Loads the document from the specified path, in the specified language.
      * <p>
      * This method may perform additional processing on the loaded documents. The default implementation
