@@ -1,13 +1,12 @@
 modLoader = "javafml"
-loaderVersion = "[31,)"
-issueTrackerURL = "${mod_issues_url}"
+loaderVersion = "[36,)"
+issueTrackerURL = "https://github.com/MightyPirates/MarkdownManual/issues"
 license = "MIT"
 
 [[mods]]
 modId = "markdown_manual"
-version = "${mod_version}"
-displayName = "${mod_name}"
-displayURL = "${mod_url}"
+version = "${file.jarVersion}"
+displayName = "Markdown Manual"
 authors = "Sangar"
 description = '''
 Library mod providing a convenient way of defining in-game manuals.
@@ -16,12 +15,12 @@ Library mod providing a convenient way of defining in-game manuals.
 [[dependencies.markdown_manual]]
 modId = "forge"
 mandatory = true
-versionRange = "[${forge_version_min},)"
+versionRange = "[36.1.32,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.markdown_manual]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[${minecraft_version_min}]"
+versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
 side = "BOTH"
