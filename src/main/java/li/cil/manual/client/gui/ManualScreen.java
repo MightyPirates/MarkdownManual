@@ -297,12 +297,7 @@ public final class ManualScreen extends Screen {
         return screenStyle.getTabRect().getHeight() - screenStyle.getTabOverlap();
     }
 
-    private static final class ScrollOffset {
-        public final int value;
-
-        public ScrollOffset(final int value) {
-            this.value = value;
-        }
+    private record ScrollOffset(int value) {
     }
 
     private class TabButton extends Button {
