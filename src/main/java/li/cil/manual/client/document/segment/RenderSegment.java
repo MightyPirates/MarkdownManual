@@ -48,8 +48,8 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
     @Override
     public Optional<Component> getTooltip() {
-        if (renderer instanceof InteractiveContentRenderer) {
-            return Optional.of(((InteractiveContentRenderer) renderer).getTooltip(title));
+        if (renderer instanceof InteractiveContentRenderer interactiveRenderer) {
+            return Optional.of(interactiveRenderer.getTooltip(title));
         } else {
             return Optional.of(title);
         }
@@ -57,8 +57,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
     @Override
     public boolean mouseClicked() {
-        return renderer instanceof InteractiveContentRenderer && ((InteractiveContentRenderer) renderer).
-            mouseClicked();
+        return renderer instanceof InteractiveContentRenderer interactiveRenderer && interactiveRenderer.mouseClicked();
     }
 
     @Override

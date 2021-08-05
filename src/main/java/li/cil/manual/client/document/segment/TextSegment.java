@@ -262,32 +262,33 @@ public class TextSegment extends AbstractSegment {
 
     private <T> T tryGetFromParent(final T defaultValue, final Function<TextSegment, T> getter) {
         final Optional<Segment> parent = getParent();
-        if (parent.isPresent() && parent.get() instanceof TextSegment) {
-            return getter.apply((TextSegment) parent.get());
+        if (parent.isPresent() && parent.get() instanceof TextSegment textSegment) {
+            return getter.apply(textSegment);
         } else {
             return defaultValue;
         }
     }
 
     private Optional<InteractiveSegment> getInteractiveParent() {
-        Optional<Segment> segment = Optional.of(this);
-        while (segment.isPresent()) {
-            if (segment.get() instanceof InteractiveSegment) {
-                return segment.map(s -> (InteractiveSegment) s);
+        Optional<Segment> optional = Optional.of(this);
+        while (optional.isPresent()) {
+            final Segment segment = optional.get();
+            if (segment instanceof InteractiveSegment interactiveSegment) {
+                return Optional.of(interactiveSegment);
             }
-            segment = segment.get().getParent();
+            optional = segment.getParent();
         }
         return Optional.empty();
     }
 
     private TextSegment getRootTextSegment() {
-        TextSegment textSegment = this;
+        TextSegment rootSegment = this;
         Optional<Segment> parent = getParent();
-        while (parent.isPresent() && parent.get() instanceof TextSegment) {
-            textSegment = (TextSegment) parent.get();
-            parent = parent.get().getParent();
+        while (parent.isPresent() && parent.get() instanceof TextSegment textSegment) {
+            rootSegment = textSegment;
+            parent = textSegment.getParent();
         }
-        return textSegment;
+        return rootSegment;
     }
 
     private int computeWrappedIndent() {

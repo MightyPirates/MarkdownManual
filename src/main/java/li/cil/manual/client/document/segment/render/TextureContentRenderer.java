@@ -28,8 +28,8 @@ public class TextureContentRenderer implements ContentRenderer {
 
         final TextureManager manager = Minecraft.getInstance().getTextureManager();
         final AbstractTexture image = manager.getTexture(location);
-        if (image instanceof ImageTexture) {
-            this.texture = (ImageTexture) image;
+        if (image instanceof ImageTexture imageTexture) {
+            this.texture = imageTexture;
         } else {
             this.texture = new ImageTexture(location);
             manager.register(location, texture);
