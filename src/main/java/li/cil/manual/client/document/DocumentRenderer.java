@@ -183,16 +183,15 @@ public final class DocumentRenderer {
         // Clear depth mask, then create masks in foreground above and below scroll area.
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
 
-        // Tow options here, disable alpha testing or disable color output. We pick the former.
-//        RenderSystem.disableAlphaTest(); todo
+        RenderSystem.colorMask(false, false, false, false);
 
         matrixStack.pushPose();
         matrixStack.translate(0, 0, 500);
-        Screen.fill(matrixStack, -10, -1000, width + 20, 0, 0);
-        Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0);
+        Screen.fill(matrixStack, -10, -1000, width + 20, 0, 0xFFFFFFFF);
+        Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0xFFFFFFFF);
         matrixStack.popPose();
 
-//        RenderSystem.enableAlphaTest(); todo
+        RenderSystem.colorMask(true, true, true, true);
 
         // Actual rendering.
         final boolean isMouseOverDocument = mouseX >= 0 || mouseX <= width || mouseY >= 0 || mouseY <= height;
