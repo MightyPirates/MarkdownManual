@@ -104,7 +104,7 @@ repositories {
     }
 }
 dependencies {
-    compile "li.cil.markdown_manual:markdown_manual-1.16.5-forge:${config.markdown_manual.version}"
+    compile "li.cil.markdown_manual:markdown_manual-1.17.1-forge:${config.markdown_manual.version}"
 }
 ```
 
