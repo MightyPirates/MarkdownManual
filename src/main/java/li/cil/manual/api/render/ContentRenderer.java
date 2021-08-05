@@ -20,7 +20,7 @@ public interface ContentRenderer {
      * The width of the area this renderer uses.
      * <p>
      * This is used to offset the OpenGL state properly before calling
-     * {@link #render(MatrixStack, int, int)}, to correctly align the image horizontally.
+     * {@link #render(PoseStack, int, int)}, to correctly align the image horizontally.
      *
      * @return the width of the rendered image.
      */
@@ -30,7 +30,7 @@ public interface ContentRenderer {
      * The height of the area this renderer uses.
      * <p>
      * This is used to offset the OpenGL state properly before calling
-     * {@link #render(MatrixStack, int, int)}, as well as to know where to resume rendering
+     * {@link #render(PoseStack, int, int)}, as well as to know where to resume rendering
      * other content below the image.
      *
      * @return the height of the rendered image.
