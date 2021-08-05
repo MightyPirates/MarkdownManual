@@ -14,42 +14,45 @@ import li.cil.manual.client.provider.BlockRendererProvider;
 import li.cil.manual.client.provider.ItemRendererProvider;
 import li.cil.manual.client.provider.TagRendererProvider;
 import li.cil.manual.client.provider.TextureRendererProvider;
+import li.cil.manual.client.util.RegistryUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 @OnlyIn(Dist.CLIENT)
 public final class ClientSetup {
     public static void initialize() {
-        final DeferredRegister<Tab> tabs = DeferredRegister.create(Tab.class, Constants.MOD_ID);
-        final DeferredRegister<PathProvider> pathProviders = DeferredRegister.create(PathProvider.class, Constants.MOD_ID);
-        final DeferredRegister<DocumentProvider> documentProviders = DeferredRegister.create(DocumentProvider.class, Constants.MOD_ID);
-        final DeferredRegister<RendererProvider> rendererProviders = DeferredRegister.create(RendererProvider.class, Constants.MOD_ID);
-        final DeferredRegister<ManualModel> manuals = DeferredRegister.create(ManualModel.class, Constants.MOD_ID);
+        RegistryUtils.begin(Constants.MOD_ID);
 
-        pathProviders.makeRegistry(Constants.PATH_PROVIDERS.location().getPath(), () -> new RegistryBuilder<PathProvider>().disableSaving().disableSync());
-        documentProviders.makeRegistry(Constants.DOCUMENT_PROVIDERS.location().getPath(), () -> new RegistryBuilder<DocumentProvider>().disableSaving().disableSync());
-        rendererProviders.makeRegistry(Constants.RENDERER_PROVIDERS.location().getPath(), () -> new RegistryBuilder<RendererProvider>().disableSaving().disableSync());
-        tabs.makeRegistry(Constants.TABS.location().getPath(), () -> new RegistryBuilder<Tab>().disableSaving().disableSync());
-        manuals.makeRegistry(Constants.MANUALS.location().getPath(), () -> new RegistryBuilder<ManualModel>().disableSaving().disableSync());
+        final DeferredRegister<Tab> tabs = RegistryUtils.create(Tab.class);
+        final DeferredRegister<PathProvider> pathProviders = RegistryUtils.create(PathProvider.class);
+        final DeferredRegister<DocumentProvider> documentProviders = RegistryUtils.create(DocumentProvider.class);
+        final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.create(RendererProvider.class);
+        final DeferredRegister<ManualModel> manuals = RegistryUtils.create(ManualModel.class);
+
+        makeClientOnlyRegistry(pathProviders, Constants.PATH_PROVIDERS);
+        makeClientOnlyRegistry(documentProviders, Constants.DOCUMENT_PROVIDERS);
+        makeClientOnlyRegistry(rendererProviders, Constants.RENDERER_PROVIDERS);
+        makeClientOnlyRegistry(tabs, Constants.TABS);
+        makeClientOnlyRegistry(manuals, Constants.MANUALS);
 
         rendererProviders.register("texture", TextureRendererProvider::new);
         rendererProviders.register("item", ItemRendererProvider::new);
         rendererProviders.register("block", BlockRendererProvider::new);
         rendererProviders.register("tag", TagRendererProvider::new);
 
-        pathProviders.register(FMLJavaModLoadingContext.get().getModEventBus());
-        documentProviders.register(FMLJavaModLoadingContext.get().getModEventBus());
-        rendererProviders.register(FMLJavaModLoadingContext.get().getModEventBus());
-        tabs.register(FMLJavaModLoadingContext.get().getModEventBus());
-        manuals.register(FMLJavaModLoadingContext.get().getModEventBus());
+        RegistryUtils.finish();
 
         MinecraftForge.EVENT_BUS.addListener(ClientSetup::handleShowManualScreen);
     }
+
+    // --------------------------------------------------------------------- //
 
     private static void handleShowManualScreen(final ShowManualScreenEvent event) {
         final ManualModel model = event.getManualModel();
@@ -58,5 +61,9 @@ public final class ClientSetup {
 
         final ManualScreen screen = new ManualScreen(model, manualStyle, screenStyle);
         Minecraft.getInstance().setScreen(screen);
+    }
+
+    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final RegistryKey<Registry<T>> key) {
+        deferredRegister.makeRegistry(key.location().getPath(), () -> new RegistryBuilder<T>().disableSync().disableSaving());
     }
 }
