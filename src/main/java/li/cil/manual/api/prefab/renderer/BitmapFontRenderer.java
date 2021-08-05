@@ -196,12 +196,9 @@ public abstract class BitmapFontRenderer implements FontRenderer {
                 VertexFormat.Mode.QUADS, 256,
                 false, false,
                 CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_TEX_SHADER)
                     .setTextureState(new TextureStateShard(texture, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-//                    .setDiffuseLightingState(NO_DIFFUSE_LIGHTING)
-//                    .setAlphaState(DEFAULT_ALPHA)
-                    .setLightmapState(NO_LIGHTMAP)
-                    .setOutputState(TRANSLUCENT_TARGET)
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
         }
