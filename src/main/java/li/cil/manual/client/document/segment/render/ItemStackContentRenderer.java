@@ -61,6 +61,7 @@ public final class ItemStackContentRenderer implements ContentRenderer {
         mc.getItemRenderer().renderGuiItem(stack, 0, 0);
 
         renderSystemPoseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
 
         // Unfuck GL state.
         RenderSystem.enableBlend();

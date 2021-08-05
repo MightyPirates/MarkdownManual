@@ -38,6 +38,7 @@ public final class ItemStackTab extends AbstractTab {
         Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, 0, 0);
 
         renderSystemPoseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
 
         // Unfuck GL state.
         RenderSystem.enableBlend();
