@@ -21,6 +21,6 @@ side = "BOTH"
 [[dependencies.markdown_manual]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.17.1,1.18)"
+versionRange = "[1.18]"
 ordering = "NONE"
 side = "BOTH"

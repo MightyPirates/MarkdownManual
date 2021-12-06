@@ -122,8 +122,8 @@ public final class ManualScreen extends Screen {
 
         matrixStack.popPose();
 
-        currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t ->
-            renderComponentToolTip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
+        currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t -> 
+            renderComponentTooltip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
 
         for (final GuiEventListener widget : this.children()) {
             if (widget instanceof final AbstractWidget button) {
@@ -316,20 +316,20 @@ public final class ManualScreen extends Screen {
 
         @Override
         public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
-            if (!isHovered()) {
+            if (!isHoveredOrFocused()) {
                 return;
             }
 
             final List<Component> tooltip = new ArrayList<>();
             tab.getTooltip(tooltip);
             if (!tooltip.isEmpty()) {
-                ManualScreen.this.renderComponentToolTip(matrixStack, tooltip, mouseX, mouseY, getFontRenderer());
+                ManualScreen.this.renderComponentTooltip(matrixStack, tooltip, mouseX, mouseY, getFontRenderer());
             }
         }
 
         @Override
         public void renderButton(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-            if (isHovered()) {
+            if (isHoveredOrFocused()) {
                 targetX = baseX;
             } else {
                 targetX = baseX + screenStyle.getTabHoverShift();
@@ -345,7 +345,7 @@ public final class ManualScreen extends Screen {
 
             width = screenStyle.getTabAreaRect().getWidth() - (x - baseX);
 
-            final int v0 = isHovered() ? screenStyle.getTabRect().getHeight() : 0;
+            final int v0 = isHoveredOrFocused() ? screenStyle.getTabRect().getHeight() : 0;
             final int visualWidth = screenStyle.getTabRect().getWidth();
             final int visualHeight = screenStyle.getTabRect().getHeight();
             final int textureWidth = screenStyle.getTabRect().getWidth();
@@ -397,7 +397,7 @@ public final class ManualScreen extends Screen {
 
             final float u0 = 0;
             final float u1 = u0 + 1;
-            final float v0 = (isDragging || isHovered()) ? 0.5f : 0;
+            final float v0 = (isDragging || isHoveredOrFocused()) ? 0.5f : 0;
             final float v1 = v0 + 0.5f;
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -415,7 +415,7 @@ public final class ManualScreen extends Screen {
 
         @Override
         public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
-            if (!isDragging && !isHovered() && !isCoordinateOverScrollBar(mouseX, mouseY)) {
+            if (!isDragging && !isHoveredOrFocused() && !isCoordinateOverScrollBar(mouseX, mouseY)) {
                 return;
             }
             renderTooltip(matrixStack, new TextComponent(100 * getScrollPosition() / maxScrollPosition() + "%"),
