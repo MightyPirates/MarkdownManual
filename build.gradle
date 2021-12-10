@@ -117,31 +117,6 @@ jar {
     }
 }
 
-task apiJar(type: Jar) {
-    archiveClassifier.set('api')
-    from sourceSets.main.allSource
-    from sourceSets.main.output
-    include 'li/cil/manual/api/**'
-}
-
-artifacts {
-    archives apiJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact apiJar
-        }
-    }
-    repositories {
-        maven {
-            url System.getenv('MAVEN_PATH')
-        }
-    }
-}
-
 curseforge {
     final def curseForgeApiKey = System.getenv('CURSEFORGE_API_KEY')
     apiKey = curseForgeApiKey ? curseForgeApiKey : ""

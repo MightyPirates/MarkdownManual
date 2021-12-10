@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,6 +25,13 @@ jobs:
         with:
           java-version: 1.8
       - run: chmod +x gradlew
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: gradle-
       - run: ./gradlew build
 
       - name: Publish to Github
@@ -33,8 +41,5 @@ jobs:
           files: ./build/libs/*.jar
           name: ${{ steps.split_tag.outputs._1 }} (MC${{ steps.split_tag.outputs._0 }})
 
-#      - name: Publish to Maven
-#        run: ./gradlew publish
-#
-#      - name: Publish to Curseforge
-#        run: ./gradlew curseforge
+      - name: Publish to Curseforge
+        run: ./gradlew curseforge
