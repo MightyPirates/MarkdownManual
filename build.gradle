@@ -43,14 +43,17 @@ group = 'li.cil.markdown_manual'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
-    maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
+    maven {
+        url 'https://cursemaven.com'
+        content { includeGroup "curse.maven" }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
+    // Just for in-dev convenience. Mod doesn't use any JEI APIs.
+    implementation fg.deobf("curse.maven:jei-238222:3530253")
 }
 
 minecraft {
