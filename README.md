@@ -26,10 +26,10 @@ single [`NamespaceContentProvider`](src/main/java/li/cil/manual/api/prefab/provi
 the current mod, e.g.:
 
 ```java
-final DeferredRegister<ContentProvider> contentProviders=
-    DeferredRegister.create(ContentProvider.class,"your_mod_id");
+final DeferredRegister<ContentProvider> contentProviders =
+    DeferredRegister.create(ContentProvider.class, "your_mod_id");
     contentProviders.register("name_of_your_content_provider",
-    ()->new NamespaceContentProvider("your_mod_id","doc"))
+    () -> new NamespaceContentProvider("your_mod_id", "doc"))
 ```
 
 Where `doc` is a path in your mod's assets, in this case your directory structure would be like this:
@@ -105,6 +105,6 @@ repositories {
     }
 }
 dependencies {
-    implementation fg.deobf("curse.maven:markdownmanual-502485:3414389")
+    implementation fg.deobf("curse.maven:markdownmanual-502485:3551677")
 }
 ```

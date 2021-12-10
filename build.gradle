@@ -49,7 +49,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Just for in-dev convenience. Mod doesn't use any JEI APIs.
-    implementation fg.deobf("curse.maven:jei-238222:3550017")
+    implementation fg.deobf("curse.maven:jei-238222:3550020")
 }
 
 minecraft {
