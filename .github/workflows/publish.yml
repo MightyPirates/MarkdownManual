@@ -17,8 +17,6 @@ jobs:
         with:
           string: ${{ github.event.release.tag_name }}
           split-by: '/'
-      - name: Set Version for Gradle
-        run: sed -i 's/semver=0.0.0/semver=${{ steps.split_tag.outputs._1 }}/g' gradle.properties
 
       - name: Set up JDK
         uses: actions/setup-java@v1
@@ -34,7 +32,7 @@ jobs:
           key: ubuntu-latest-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ubuntu-latest-gradle-
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' build
 
       - name: Add Artifacts to Github Release
         uses: alexellis/upload-assets@0.3.0
@@ -44,4 +42,4 @@ jobs:
           asset_paths: '["./build/libs/*.jar"]'
 
       - name: Publish to Curseforge
-        run: ./gradlew curseforge
+        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' curseforge
