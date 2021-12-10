@@ -1,0 +1,33 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Bump Version
+        run: sed -i 's/semver=0.0.0/semver=${{ github.ref }}/g' gradle.properties
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - run: chmod +x gradlew
+      - run: ./gradlew build
+
+      - name: Publish to Github
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: changelog.md
+          files: ./build/libs/*.jar
+
+#      - name: Publish to Maven
+#        run: ./gradlew publish
+#
+#      - name: Publish to Curseforge
+#        run: ./gradlew curseforge
