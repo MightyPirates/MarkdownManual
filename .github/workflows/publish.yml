@@ -1,9 +1,8 @@
 name: publish
 
 on:
-  push:
-    tags:
-      - '*/*'
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -11,35 +10,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - uses: rishabhgupta/split-by@v1
-        id: split_tag
-        with:
-          string: ${{ github.event.release.tag_name }}
-          split-by: '/'
-
-      - name: Bump Version
-        run: sed -i 's/semver=0.0.0/semver=${{ steps.split_tag.outputs._1 }}/g' gradle.properties
-
-      - uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       - uses: actions/cache@v2
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: gradle-
-      - run: ./gradlew build
+          key: ubuntu-latest-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ubuntu-latest-gradle-
+      - name: Build with Gradle
+        run: ./gradlew build
 
-      - name: Publish to Github
-        uses: softprops/action-gh-release@v1
+      - name: Add Artifacts to Github Release
+        uses: alexellis/upload-assets@0.3.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          body_path: changelog.md
-          files: ./build/libs/*.jar
-          name: ${{ steps.split_tag.outputs._1 }} (MC${{ steps.split_tag.outputs._0 }})
+          asset_paths: '["./build/libs/*.jar"]'
 
-      - name: Publish to Curseforge
-        run: ./gradlew curseforge
+#      - name: Publish to Curseforge
+#        run: ./gradlew curseforge
