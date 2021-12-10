@@ -14,11 +14,11 @@ jobs:
       - uses: rishabhgupta/split-by@v1
         id: split_tag
         with:
-          string: ${{ github.ref }}
+          string: ${{ github.event.release.tag_name }}
           split-by: '/'
 
       - name: Bump Version
-        run: sed -i 's/semver=0.0.0/semver=${{ steps.split_tag.outputs._2 }}/g' gradle.properties
+        run: sed -i 's/semver=0.0.0/semver=${{ steps.split_tag.outputs._1 }}/g' gradle.properties
 
       - uses: actions/setup-java@v1
         with:
@@ -31,7 +31,7 @@ jobs:
         with:
           body_path: changelog.md
           files: ./build/libs/*.jar
-          name: ${{ steps.split_tag.outputs._2 }} (MC${{ steps.split_tag.outputs._1 }})
+          name: ${{ steps.split_tag.outputs._1 }} (MC${{ steps.split_tag.outputs._0 }})
 
 #      - name: Publish to Maven
 #        run: ./gradlew publish
