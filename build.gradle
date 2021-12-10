@@ -29,15 +29,7 @@ def getGitRef() {
     }
 }
 
-final def semver = "${version_major}.${version_minor}.${version_patch}"
-
-String build_number = System.getenv('PROMOTED_NUMBER');
-if (build_number == null)
-    build_number = System.getenv('BUILD_NUMBER')
-if (build_number == null)
-    build_number = getGitRef()
-
-version = "${semver}+${build_number}"
+version = "${semver}+${getGitRef()}"
 group = 'li.cil.markdown_manual'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -151,7 +143,8 @@ publishing {
 }
 
 curseforge {
-    apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
+    final def curseForgeApiKey = System.getenv('CURSEFORGE_API_KEY')
+    apiKey = curseForgeApiKey ? curseForgeApiKey : ""
     project {
         id = curse_project_id
         releaseType = curse_project_releaseType
