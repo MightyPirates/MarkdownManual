@@ -1,0 +1,33 @@
+name: build
+
+on:
+  pull_request:
+    tags-ignore: [ '**' ]
+  push:
+    tags-ignore: [ '**' ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [ 1.8 ]
+        os: [ ubuntu-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ${{ runner.os }}-gradle-
+      - name: Build with Gradle
+        run: ./gradlew build

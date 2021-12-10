@@ -100,12 +100,11 @@ To add a dependency to this mod for use in your mod, add the following to your `
 ```groovy
 repositories {
     maven {
-        url = 'https://maven.cil.li/'
+        url 'https://cursemaven.com'
+        content { includeGroup "curse.maven" }
     }
 }
 dependencies {
-    compile "li.cil.markdown_manual:markdown_manual-1.17.1-forge:${config.markdown_manual.version}"
+    implementation fg.deobf("curse.maven:markdownmanual-502485:3414389")
 }
 ```
-
-Where `${config.markdown_manual.version}` is the version you'd like to build against.

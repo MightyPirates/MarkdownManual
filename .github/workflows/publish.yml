@@ -1,0 +1,47 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract Version from Tag
+        uses: rishabhgupta/split-by@v1
+        id: split_tag
+        with:
+          string: ${{ github.event.release.tag_name }}
+          split-by: '/'
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ubuntu-latest-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ubuntu-latest-gradle-
+      - name: Build with Gradle
+        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' build
+
+      - name: Add Artifacts to Github Release
+        uses: alexellis/upload-assets@0.3.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["./build/libs/*.jar"]'
+
+      - name: Publish to Curseforge
+        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' curseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}

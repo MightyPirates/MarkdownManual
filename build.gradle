@@ -29,15 +29,7 @@ def getGitRef() {
     }
 }
 
-final def semver = "${version_major}.${version_minor}.${version_patch}"
-
-String build_number = System.getenv('PROMOTED_NUMBER');
-if (build_number == null)
-    build_number = System.getenv('BUILD_NUMBER')
-if (build_number == null)
-    build_number = getGitRef()
-
-version = "${semver}+${build_number}"
+version = "${semver}+${getGitRef()}"
 group = 'li.cil.markdown_manual'
 
 java.toolchain {
@@ -46,14 +38,17 @@ java.toolchain {
 }
 
 repositories {
-    maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
+    maven {
+        url 'https://cursemaven.com'
+        content { includeGroup "curse.maven" }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-//    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
+    // Just for in-dev convenience. Mod doesn't use any JEI APIs.
+    implementation fg.deobf("curse.maven:jei-238222:3550017")
 }
 
 minecraft {
@@ -125,33 +120,9 @@ jar {
     }
 }
 
-task apiJar(type: Jar) {
-    archiveClassifier.set('api')
-    from sourceSets.main.allSource
-    from sourceSets.main.output
-    include 'li/cil/manual/api/**'
-}
-
-artifacts {
-    archives apiJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact apiJar
-        }
-    }
-    repositories {
-        maven {
-            url System.getenv('MAVEN_PATH')
-        }
-    }
-}
-
 curseforge {
-    apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
+    final def curseForgeApiKey = System.getenv('CURSEFORGE_API_KEY')
+    apiKey = curseForgeApiKey ? curseForgeApiKey : ""
     project {
         id = curse_project_id
         releaseType = curse_project_releaseType
