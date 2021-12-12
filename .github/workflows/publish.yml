@@ -49,7 +49,8 @@ jobs:
           GITHUB_MAVEN_URL: 'https://maven.pkg.github.com/${{ github.repository }}'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Publish to Curseforge
-#        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' curseforge
-#        env:
-#          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      - name: Publish to Curseforge
+        run: ./gradlew -Psemver='${{ steps.split_tag.outputs._1 }}' curseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          CHANGELOG: ${{ github.event.release.body }}

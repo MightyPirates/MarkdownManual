@@ -1,1 +1,0 @@
-* Added bitmap font renderer prefab class.

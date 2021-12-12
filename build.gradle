@@ -157,7 +157,7 @@ curseforge {
         id = curse_project_id
         releaseType = curse_project_releaseType
         changelogType = 'markdown'
-        changelog = file('changelog.md')
+        changelog = System.getenv("CHANGELOG") ?: "Changelog not available."
         addGameVersion 'Forge'
         addGameVersion minecraft_version
         addGameVersion 'Java 8'
