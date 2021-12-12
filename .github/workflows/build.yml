@@ -2,9 +2,8 @@ name: build
 
 on:
   pull_request:
-    tags-ignore: [ '**' ]
   push:
-    tags-ignore: [ '**' ]
+    branches: [ '**' ]
 
 jobs:
   build:
@@ -22,6 +21,8 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
       - uses: actions/cache@v2
         with:
           path: |
