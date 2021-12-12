@@ -1,1 +1,2 @@
-rootProject.name = 'markdown_manual-1.18-forge'
+apply from: 'minecraft.gradle'
+rootProject.name = "markdown_manual-${minecraft_version}-${minecraft_sdk}"
