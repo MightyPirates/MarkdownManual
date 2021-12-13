@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[37,)"
+loaderVersion = "[39,)"
 issueTrackerURL = "https://github.com/MightyPirates/MarkdownManual/issues"
 license = "MIT"
 
@@ -15,12 +15,12 @@ Library mod providing a convenient way of defining in-game manuals.
 [[dependencies.markdown_manual]]
 modId = "forge"
 mandatory = true
-versionRange = "[37.0.5,)"
+versionRange = "[39.0.0,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.markdown_manual]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18]"
+versionRange = "[1.18.1,1.19)"
 ordering = "NONE"
 side = "BOTH"
