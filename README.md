@@ -105,6 +105,6 @@ repositories {
     }
 }
 dependencies {
-    implementation fg.deobf("curse.maven:markdownmanual-502485:3551677")
+    implementation fg.deobf("curse.maven:markdownmanual-502485:3565800")
 }
 ```
