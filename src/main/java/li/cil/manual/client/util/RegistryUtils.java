@@ -1,5 +1,7 @@
 package li.cil.manual.client.util;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -19,10 +21,10 @@ public abstract class RegistryUtils {
     private static Phase phase = Phase.PRE_INIT;
     private static String modId;
 
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(final Class<T> type) {
+    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(ResourceKey<Registry<T>> key) {
         if (phase != Phase.INIT) throw new IllegalStateException();
 
-        final DeferredRegister<T> entry = DeferredRegister.create(type, modId);
+        final DeferredRegister<T> entry = DeferredRegister.create(key.registry(), modId);
         ENTRIES.add(entry);
         return entry;
     }

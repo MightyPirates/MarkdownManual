@@ -16,8 +16,6 @@ import li.cil.manual.client.provider.TagRendererProvider;
 import li.cil.manual.client.provider.TextureRendererProvider;
 import li.cil.manual.client.util.RegistryUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,17 +28,17 @@ public final class ClientSetup {
     public static void initialize() {
         RegistryUtils.begin(Constants.MOD_ID);
 
-        final DeferredRegister<Tab> tabs = RegistryUtils.create(Tab.class);
-        final DeferredRegister<PathProvider> pathProviders = RegistryUtils.create(PathProvider.class);
-        final DeferredRegister<DocumentProvider> documentProviders = RegistryUtils.create(DocumentProvider.class);
-        final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.create(RendererProvider.class);
-        final DeferredRegister<ManualModel> manuals = RegistryUtils.create(ManualModel.class);
+        final DeferredRegister<Tab> tabs = RegistryUtils.create(Constants.TABS);
+        final DeferredRegister<PathProvider> pathProviders = RegistryUtils.create(Constants.PATH_PROVIDERS);
+        final DeferredRegister<DocumentProvider> documentProviders = RegistryUtils.create(Constants.DOCUMENT_PROVIDERS);
+        final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.create(Constants.RENDERER_PROVIDERS);
+        final DeferredRegister<ManualModel> manuals = RegistryUtils.create(Constants.MANUALS);
 
-        makeClientOnlyRegistry(pathProviders, Constants.PATH_PROVIDERS);
-        makeClientOnlyRegistry(documentProviders, Constants.DOCUMENT_PROVIDERS);
-        makeClientOnlyRegistry(rendererProviders, Constants.RENDERER_PROVIDERS);
-        makeClientOnlyRegistry(tabs, Constants.TABS);
-        makeClientOnlyRegistry(manuals, Constants.MANUALS);
+        makeClientOnlyRegistry(pathProviders, PathProvider.class);
+        makeClientOnlyRegistry(documentProviders, DocumentProvider.class);
+        makeClientOnlyRegistry(rendererProviders, RendererProvider.class);
+        makeClientOnlyRegistry(tabs, Tab.class);
+        makeClientOnlyRegistry(manuals, ManualModel.class);
 
         rendererProviders.register("texture", TextureRendererProvider::new);
         rendererProviders.register("item", ItemRendererProvider::new);
@@ -63,7 +61,7 @@ public final class ClientSetup {
         Minecraft.getInstance().setScreen(screen);
     }
 
-    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final ResourceKey<Registry<T>> key) {
-        deferredRegister.makeRegistry(key.location().getPath(), () -> new RegistryBuilder<T>().disableSync().disableSaving());
+    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final Class<T> type) {
+        deferredRegister.makeRegistry(type, () -> new RegistryBuilder<T>().disableSync().disableSaving());
     }
 }
