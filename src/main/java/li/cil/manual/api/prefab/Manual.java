@@ -63,7 +63,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public Optional<String> pathFor(final ItemStack stack) {
-        return find(Constants.PATH_PROVIDERS, provider -> provider.pathFor(stack));
+        return find(Constants.PATH_PROVIDER_REGISTRY, provider -> provider.pathFor(stack));
     }
 
     /**
@@ -71,7 +71,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
-        return find(Constants.PATH_PROVIDERS, provider -> provider.pathFor(world, pos, face));
+        return find(Constants.PATH_PROVIDER_REGISTRY, provider -> provider.pathFor(world, pos, face));
     }
 
     /**
@@ -89,7 +89,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public Optional<ContentRenderer> imageFor(final String path) {
-        return find(Constants.RENDERER_PROVIDERS, provider -> provider.getRenderer(path));
+        return find(Constants.RENDERER_PROVIDER_REGISTRY, provider -> provider.getRenderer(path));
     }
 
     /**
@@ -97,7 +97,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public Iterable<Tab> getTabs() {
-        return StreamSupport.stream(RegistryManager.ACTIVE.getRegistry(Constants.TABS).spliterator(), false).
+        return StreamSupport.stream(RegistryManager.ACTIVE.getRegistry(Constants.TAB_REGISTRY).spliterator(), false).
             filter(tab -> tab.matches(this)).
             collect(Collectors.toList());
     }
@@ -221,7 +221,7 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
             return Optional.of(new Document(message));
         }
 
-        return find(Constants.DOCUMENT_PROVIDERS, provider -> provider.getDocument(path, language)).flatMap(document -> {
+        return find(Constants.DOCUMENT_PROVIDER_REGISTRY, provider -> provider.getDocument(path, language)).flatMap(document -> {
             // Read first line only to check for redirect.
             final List<String> lines = document.getLines();
             if (!lines.isEmpty() && lines.get(0).toLowerCase().startsWith(REDIRECT_PRAGMA)) {

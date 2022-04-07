@@ -28,11 +28,11 @@ public final class ClientSetup {
     public static void initialize() {
         RegistryUtils.begin(Constants.MOD_ID);
 
-        final DeferredRegister<Tab> tabs = RegistryUtils.create(Constants.TABS);
-        final DeferredRegister<PathProvider> pathProviders = RegistryUtils.create(Constants.PATH_PROVIDERS);
-        final DeferredRegister<DocumentProvider> documentProviders = RegistryUtils.create(Constants.DOCUMENT_PROVIDERS);
-        final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.create(Constants.RENDERER_PROVIDERS);
-        final DeferredRegister<ManualModel> manuals = RegistryUtils.create(Constants.MANUALS);
+        final DeferredRegister<Tab> tabs = RegistryUtils.get(Constants.TAB_REGISTRY);
+        final DeferredRegister<PathProvider> pathProviders = RegistryUtils.get(Constants.PATH_PROVIDER_REGISTRY);
+        final DeferredRegister<DocumentProvider> documentProviders = RegistryUtils.get(Constants.DOCUMENT_PROVIDER_REGISTRY);
+        final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.get(Constants.RENDERER_PROVIDER_REGISTRY);
+        final DeferredRegister<ManualModel> manuals = RegistryUtils.get(Constants.MANUAL_REGISTRY);
 
         makeClientOnlyRegistry(pathProviders, PathProvider.class);
         makeClientOnlyRegistry(documentProviders, DocumentProvider.class);

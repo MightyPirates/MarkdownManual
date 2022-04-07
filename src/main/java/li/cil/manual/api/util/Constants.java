@@ -14,11 +14,11 @@ public final class Constants {
 
     // ----------------------------------------------------------------------- //
 
-    public static final ResourceKey<Registry<PathProvider>> PATH_PROVIDERS = key("path_providers");
-    public static final ResourceKey<Registry<DocumentProvider>> DOCUMENT_PROVIDERS = key("document_providers");
-    public static final ResourceKey<Registry<RendererProvider>> RENDERER_PROVIDERS = key("renderer_providers");
-    public static final ResourceKey<Registry<Tab>> TABS = key("tabs");
-    public static final ResourceKey<Registry<ManualModel>> MANUALS = key("manuals");
+    public static final ResourceKey<Registry<PathProvider>> PATH_PROVIDER_REGISTRY = key("path_provider");
+    public static final ResourceKey<Registry<DocumentProvider>> DOCUMENT_PROVIDER_REGISTRY = key("document_provider");
+    public static final ResourceKey<Registry<RendererProvider>> RENDERER_PROVIDER_REGISTRY = key("renderer_provider");
+    public static final ResourceKey<Registry<Tab>> TAB_REGISTRY = key("tab");
+    public static final ResourceKey<Registry<ManualModel>> MANUAL_REGISTRY = key("manual");
 
     // ----------------------------------------------------------------------- //
 

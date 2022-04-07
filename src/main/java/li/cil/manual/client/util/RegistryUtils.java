@@ -21,7 +21,7 @@ public abstract class RegistryUtils {
     private static Phase phase = Phase.PRE_INIT;
     private static String modId;
 
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(ResourceKey<Registry<T>> key) {
+    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> get(ResourceKey<Registry<T>> key) {
         if (phase != Phase.INIT) throw new IllegalStateException();
 
         final DeferredRegister<T> entry = DeferredRegister.create(key.registry(), modId);
@@ -29,7 +29,7 @@ public abstract class RegistryUtils {
         return entry;
     }
 
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(final IForgeRegistry<T> registry) {
+    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> get(final IForgeRegistry<T> registry) {
         if (phase != Phase.INIT) throw new IllegalStateException();
 
         final DeferredRegister<T> entry = DeferredRegister.create(registry, modId);
