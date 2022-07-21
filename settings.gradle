@@ -1,2 +1,9 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
+}
+
 apply from: 'minecraft.gradle'
 rootProject.name = "markdown_manual-${minecraft_version}-${minecraft_sdk}"
