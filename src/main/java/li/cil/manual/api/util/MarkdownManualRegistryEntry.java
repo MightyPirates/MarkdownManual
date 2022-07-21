@@ -1,13 +1,10 @@
 package li.cil.manual.api.util;
 
+import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
 import li.cil.manual.api.provider.RendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-
-import java.util.Objects;
 
 /**
  * This is used when associating various registry objects, such as {@link DocumentProvider}s,
@@ -16,19 +13,17 @@ import java.util.Objects;
  *
  * @param <T> the generic type of the entry.
  */
-public interface MarkdownManualRegistryEntry<T> extends IForgeRegistryEntry<T>, Comparable<MarkdownManualRegistryEntry<T>> {
+public interface MarkdownManualRegistryEntry extends Comparable<MarkdownManualRegistryEntry> {
     /**
      * Checks if this instance applies to the specified manual and should be used
      * in the internal logic of the manual, such as looking up paths and content.
      *
      * @param manual the manual to check.
-     * @return {@code true} if this instance applies to the manual, {@code false} otherwise.
+     * @return {@code true} if this instance applies to the manual, {@code false} if not,
+     * {@link OptionalBoolean#empty()} if the default heuristic should be used.
      */
-    default boolean matches(final ManualModel manual) {
-        final ResourceLocation entryId = this.getRegistryName();
-        final ResourceLocation manualId = manual.getRegistryName();
-        return entryId != null && manualId != null &&
-               Objects.equals(entryId.getNamespace(), manualId.getNamespace());
+    default OptionalBoolean matches(final ManualModel manual) {
+        return OptionalBoolean.empty();
     }
 
     /**
@@ -48,7 +43,7 @@ public interface MarkdownManualRegistryEntry<T> extends IForgeRegistryEntry<T>, 
      * {@inheritDoc}
      */
     @Override
-    default int compareTo(final MarkdownManualRegistryEntry<T> other) {
+    default int compareTo(final MarkdownManualRegistryEntry other) {
         return Integer.compare(sortOrder(), other.sortOrder());
     }
 }

@@ -4,7 +4,6 @@ import li.cil.manual.api.provider.RendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
  * Utility base class for {@link RendererProvider}s, taking care of the prefix check.
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractRendererProvider extends ForgeRegistryEntry<RendererProvider> implements RendererProvider {
+public abstract class AbstractRendererProvider implements RendererProvider {
     private final String prefix;
 
     public AbstractRendererProvider(final String prefix) {

@@ -4,11 +4,10 @@ import com.google.common.base.Charsets;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.api.provider.DocumentProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ import java.util.Optional;
  * as seen from the manual.
  */
 @OnlyIn(Dist.CLIENT)
-public class NamespaceDocumentProvider extends ForgeRegistryEntry<DocumentProvider> implements DocumentProvider {
+public class NamespaceDocumentProvider implements DocumentProvider {
     private final String namespace;
     private final String basePath;
 
@@ -42,16 +41,18 @@ public class NamespaceDocumentProvider extends ForgeRegistryEntry<DocumentProvid
     public Optional<Document> getDocument(final String path, final String language) {
         final ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         final ResourceLocation location = new ResourceLocation(namespace, basePath + path);
-        try (final InputStream stream = resourceManager.getResource(location).getInputStream()) {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));
-            final ArrayList<String> lines = new ArrayList<>();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
+        return resourceManager.getResource(location).flatMap(resource -> {
+            try (final InputStream stream = resource.open()) {
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));
+                final ArrayList<String> lines = new ArrayList<>();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+                return Optional.of(new Document(lines, location));
+            } catch (final Throwable ignored) {
+                return Optional.empty();
             }
-            return Optional.of(new Document(lines, location));
-        } catch (final Throwable ignored) {
-            return Optional.empty();
-        }
+        });
     }
 }

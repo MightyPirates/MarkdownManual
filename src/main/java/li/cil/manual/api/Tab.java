@@ -17,7 +17,7 @@ import java.util.List;
  * will usually be one, for your main index page.
  */
 @OnlyIn(Dist.CLIENT)
-public interface Tab extends MarkdownManualRegistryEntry<Tab> {
+public interface Tab extends MarkdownManualRegistryEntry {
     /**
      * Called when icon of a tab should be rendered.
      * <p>

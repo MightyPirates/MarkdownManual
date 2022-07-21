@@ -1,5 +1,6 @@
 package li.cil.manual.client.provider;
 
+import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.prefab.provider.AbstractRendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
@@ -25,8 +26,8 @@ public final class ItemRendererProvider extends AbstractRendererProvider {
     // --------------------------------------------------------------------- //
 
     @Override
-    public boolean matches(final ManualModel manual) {
-        return true;
+    public OptionalBoolean matches(final ManualModel manual) {
+        return OptionalBoolean.of(true);
     }
 
     @Override

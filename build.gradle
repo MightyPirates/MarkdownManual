@@ -40,7 +40,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Just for in-dev convenience. Mod doesn't use any JEI APIs.
-    implementation fg.deobf("curse.maven:jei-238222:3564650")
+    implementation fg.deobf("curse.maven:jei-238222:3884337")
 }
 
 minecraft {
@@ -52,6 +52,7 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'info'
+            property 'forge.enabledGameTestNamespaces', 'markdown_manual'
 
             mods {
                 markdown_manual {
@@ -65,6 +66,21 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'info'
+            property 'forge.enabledGameTestNamespaces', 'markdown_manual'
+
+            mods {
+                markdown_manual {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+            property 'forge.enabledGameTestNamespaces', 'markdown_manual'
 
             mods {
                 markdown_manual {

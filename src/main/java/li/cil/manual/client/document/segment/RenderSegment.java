@@ -10,7 +10,6 @@ import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +25,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
     public RenderSegment(final DocumentRenderer document, final Segment parent, final String title, final String url) {
         super(document, parent);
-        this.title = new TextComponent(title);
+        this.title = Component.literal(title);
 
         final String path;
         if (url.contains(":")) {

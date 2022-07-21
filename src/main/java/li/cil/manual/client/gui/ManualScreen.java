@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +48,7 @@ public final class ManualScreen extends Screen {
     private ScrollButton scrollButton = null;
 
     public ManualScreen(final ManualModel model, final ManualStyle manualStyle, final ManualScreenStyle screenStyle) {
-        super(new TextComponent("Manual"));
+        super(Component.literal("Manual"));
         this.model = model;
         this.manualStyle = manualStyle;
         this.screenStyle = screenStyle;
@@ -122,7 +121,7 @@ public final class ManualScreen extends Screen {
 
         matrixStack.popPose();
 
-        currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t -> 
+        currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t ->
             renderComponentTooltip(matrixStack, Collections.singletonList(t), mouseX, mouseY, getFontRenderer()));
 
         for (final GuiEventListener widget : this.children()) {
@@ -307,7 +306,7 @@ public final class ManualScreen extends Screen {
         private int targetX;
 
         TabButton(final int x, final int y, final Tab tab, final OnPress action) {
-            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), TextComponent.EMPTY, action);
+            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), Component.empty(), action);
             this.tab = tab;
             this.baseX = x;
             this.currentX = x + screenStyle.getTabHoverShift();
@@ -374,7 +373,7 @@ public final class ManualScreen extends Screen {
         private final int baseY;
 
         ScrollButton(final int x, final int y, final int w, final int h) {
-            super(x, y, w, h, TextComponent.EMPTY, (button) -> {});
+            super(x, y, w, h, Component.empty(), (button) -> {});
             this.baseY = y;
         }
 
@@ -418,7 +417,7 @@ public final class ManualScreen extends Screen {
             if (!isDragging && !isHoveredOrFocused() && !isCoordinateOverScrollBar(mouseX, mouseY)) {
                 return;
             }
-            renderTooltip(matrixStack, new TextComponent(100 * getScrollPosition() / maxScrollPosition() + "%"),
+            renderTooltip(matrixStack, Component.literal(100 * getScrollPosition() / maxScrollPosition() + "%"),
                 leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollBarRect().getWidth(),
                 y + (getHeight() + TOOLTIP_HEIGHT) / 2);
         }

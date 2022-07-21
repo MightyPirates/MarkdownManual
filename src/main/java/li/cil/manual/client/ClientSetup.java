@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 @OnlyIn(Dist.CLIENT)
@@ -34,11 +33,11 @@ public final class ClientSetup {
         final DeferredRegister<RendererProvider> rendererProviders = RegistryUtils.get(Constants.RENDERER_PROVIDER_REGISTRY);
         final DeferredRegister<ManualModel> manuals = RegistryUtils.get(Constants.MANUAL_REGISTRY);
 
-        makeClientOnlyRegistry(pathProviders, PathProvider.class);
-        makeClientOnlyRegistry(documentProviders, DocumentProvider.class);
-        makeClientOnlyRegistry(rendererProviders, RendererProvider.class);
-        makeClientOnlyRegistry(tabs, Tab.class);
-        makeClientOnlyRegistry(manuals, ManualModel.class);
+        makeClientOnlyRegistry(pathProviders);
+        makeClientOnlyRegistry(documentProviders);
+        makeClientOnlyRegistry(rendererProviders);
+        makeClientOnlyRegistry(tabs);
+        makeClientOnlyRegistry(manuals);
 
         rendererProviders.register("texture", TextureRendererProvider::new);
         rendererProviders.register("item", ItemRendererProvider::new);
@@ -61,7 +60,7 @@ public final class ClientSetup {
         Minecraft.getInstance().setScreen(screen);
     }
 
-    private static <T extends IForgeRegistryEntry<T>> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister, final Class<T> type) {
-        deferredRegister.makeRegistry(type, () -> new RegistryBuilder<T>().disableSync().disableSaving());
+    private static <T> void makeClientOnlyRegistry(final DeferredRegister<T> deferredRegister) {
+        deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().disableSync().disableSaving());
     }
 }

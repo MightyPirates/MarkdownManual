@@ -20,7 +20,7 @@ import java.util.Optional;
  * resource providing facilities, and display that.
  */
 @OnlyIn(Dist.CLIENT)
-public interface RendererProvider extends MarkdownManualRegistryEntry<RendererProvider> {
+public interface RendererProvider extends MarkdownManualRegistryEntry {
     /**
      * Tries to get an image renderer for the specified data. If the specified
      * path is not supported, {@link Optional#empty()} is returned.

@@ -2,9 +2,9 @@ package li.cil.manual.api.provider;
 
 import li.cil.manual.api.prefab.Manual;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * content lookup.
  */
 @OnlyIn(Dist.CLIENT)
-public interface PathProvider extends MarkdownManualRegistryEntry<PathProvider> {
+public interface PathProvider extends MarkdownManualRegistryEntry {
     /**
      * Get the path to the documentation page for the provided item stack.
      * <p>

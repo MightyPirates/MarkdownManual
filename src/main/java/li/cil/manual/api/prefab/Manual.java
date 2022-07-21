@@ -9,15 +9,16 @@ import li.cil.manual.api.util.MarkdownManualRegistryEntry;
 import li.cil.manual.api.util.PathUtils;
 import li.cil.manual.client.document.Strings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +31,7 @@ import java.util.stream.StreamSupport;
  * Simple implementation of the {@link ManualModel} interface which should cover most use-cases.
  */
 @OnlyIn(Dist.CLIENT)
-public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualModel {
+public class Manual implements ManualModel {
     /**
      * The magic first characters indicating a redirect in a document, with the target path following.
      */
@@ -97,8 +98,9 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
      */
     @Override
     public Iterable<Tab> getTabs() {
-        return StreamSupport.stream(RegistryManager.ACTIVE.getRegistry(Constants.TAB_REGISTRY).spliterator(), false).
-            filter(tab -> tab.matches(this)).
+        final ForgeRegistry<Tab> registry = RegistryManager.ACTIVE.getRegistry(Constants.TAB_REGISTRY);
+        return StreamSupport.stream(registry.spliterator(), false).
+            filter(tab -> matches(registry, tab)).
             collect(Collectors.toList());
     }
 
@@ -195,10 +197,20 @@ public class Manual extends ForgeRegistryEntry<ManualModel> implements ManualMod
         return new History(path);
     }
 
-    protected <TProvider extends MarkdownManualRegistryEntry<TProvider>, TResult> Optional<TResult> find(final ResourceKey<Registry<TProvider>> key, final Function<TProvider, Optional<TResult>> lookup) {
-        return RegistryManager.ACTIVE.getRegistry(key).getValues().stream().
-            filter(provider -> provider.matches(this)).
+    protected <TProvider extends MarkdownManualRegistryEntry, TResult> Optional<TResult> find(final ResourceKey<Registry<TProvider>> key, final Function<TProvider, Optional<TResult>> lookup) {
+        final ForgeRegistry<TProvider> registry = RegistryManager.ACTIVE.getRegistry(key);
+        return registry.getValues().stream().
+            filter(provider -> matches(registry, provider)).
             sorted().map(lookup).filter(Optional::isPresent).findFirst().flatMap(x -> x);
+    }
+
+    protected <T extends MarkdownManualRegistryEntry> boolean matches(final ForgeRegistry<T> registry, final T entry) {
+        return entry.matches(this).orElseGet(() -> {
+            final ResourceLocation entryId = registry.getKey(entry);
+            final ResourceLocation manualId = RegistryManager.ACTIVE.getRegistry(Constants.MANUAL_REGISTRY).getKey(this);
+            return entryId != null && manualId != null &&
+                Objects.equals(entryId.getNamespace(), manualId.getNamespace());
+        });
     }
 
     /**

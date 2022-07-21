@@ -17,7 +17,7 @@ import java.util.Optional;
  * @see NamespaceDocumentProvider
  */
 @OnlyIn(Dist.CLIENT)
-public interface DocumentProvider extends MarkdownManualRegistryEntry<DocumentProvider> {
+public interface DocumentProvider extends MarkdownManualRegistryEntry {
     /**
      * Called to get the content of a path pointed to by the specified path.
      * <p>

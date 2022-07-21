@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public abstract class RegistryUtils {
     private static Phase phase = Phase.PRE_INIT;
     private static String modId;
 
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> get(ResourceKey<Registry<T>> registryKey) {
+    public static <T> DeferredRegister<T> get(ResourceKey<Registry<T>> registryKey) {
         if (phase != Phase.INIT) throw new IllegalStateException();
 
         final DeferredRegister<T> entry = DeferredRegister.create(registryKey.location(), modId);
@@ -29,7 +28,7 @@ public abstract class RegistryUtils {
         return entry;
     }
 
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> get(final IForgeRegistry<T> registry) {
+    public static <T> DeferredRegister<T> get(final IForgeRegistry<T> registry) {
         if (phase != Phase.INIT) throw new IllegalStateException();
 
         final DeferredRegister<T> entry = DeferredRegister.create(registry, modId);

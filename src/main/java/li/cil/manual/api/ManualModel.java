@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ import java.util.Optional;
  * @see ManualStyle
  * @see ManualScreenStyle
  */
-public interface ManualModel extends IForgeRegistryEntry<ManualModel> {
+public interface ManualModel {
     /**
      * The default language key in paths that will replaced by the actual language content will
      * be looked up for, typically the currently used language in the game.

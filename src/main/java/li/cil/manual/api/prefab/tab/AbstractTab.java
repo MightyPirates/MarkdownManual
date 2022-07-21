@@ -4,13 +4,12 @@ import li.cil.manual.api.Tab;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractTab extends ForgeRegistryEntry<Tab> implements Tab {
+public abstract class AbstractTab implements Tab {
     private final String path;
     @Nullable private final Component tooltip;
 

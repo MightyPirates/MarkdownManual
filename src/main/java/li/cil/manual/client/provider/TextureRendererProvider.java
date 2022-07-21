@@ -1,20 +1,20 @@
 package li.cil.manual.client.provider;
 
+import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
-import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.provider.RendererProvider;
+import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import li.cil.manual.client.document.segment.render.TextureContentRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
-public final class TextureRendererProvider extends ForgeRegistryEntry<RendererProvider> implements RendererProvider {
+public final class TextureRendererProvider implements RendererProvider {
     private static final String[] EXTENSIONS = {".png", ".gif", ".jpg", ".jpeg", ".bmp", ".tga"};
 
     @Override
@@ -23,8 +23,8 @@ public final class TextureRendererProvider extends ForgeRegistryEntry<RendererPr
     }
 
     @Override
-    public boolean matches(final ManualModel manual) {
-        return true;
+    public OptionalBoolean matches(final ManualModel manual) {
+        return OptionalBoolean.of(true);
     }
 
     @Override

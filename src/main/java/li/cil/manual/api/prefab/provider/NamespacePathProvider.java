@@ -12,12 +12,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
-public class NamespacePathProvider extends ForgeRegistryEntry<PathProvider> implements PathProvider {
+public class NamespacePathProvider implements PathProvider {
     private static final String NAMESPACE = "%NAMESPACE%";
     private static final String PATH = "%PATH%";
     private static final String BLOCK_PATH_WITH_NAMESPACE = ManualModel.LANGUAGE_KEY + "/%NAMESPACE%/block/%PATH%.md";
@@ -46,7 +46,7 @@ public class NamespacePathProvider extends ForgeRegistryEntry<PathProvider> impl
         final Item item = stack.getItem();
         final Block block = Block.byItem(item);
         if (block != Blocks.AIR) {
-            final ResourceLocation blockId = block.getRegistryName();
+            final ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(block);
             if (blockId == null) {
                 return Optional.empty();
             }
@@ -59,7 +59,7 @@ public class NamespacePathProvider extends ForgeRegistryEntry<PathProvider> impl
                     .replace(PATH, blockId.getPath()));
             }
         } else {
-            final ResourceLocation itemId = item.getRegistryName();
+            final ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(item);
             if (itemId == null) {
                 return Optional.empty();
             }
@@ -79,7 +79,7 @@ public class NamespacePathProvider extends ForgeRegistryEntry<PathProvider> impl
     @Override
     public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
         final Block block = world.getBlockState(pos).getBlock();
-        final ResourceLocation blockId = block.getRegistryName();
+        final ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(block);
         if (blockId == null) {
             return Optional.empty();
         }
