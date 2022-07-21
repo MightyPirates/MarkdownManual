@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'com.modrinth.minotaur' version '2.2.0'
 }
 
 apply from: 'minecraft.gradle'
@@ -154,6 +155,20 @@ curseforge {
         addGameVersion 'Forge'
         addGameVersion minecraft_version
         addGameVersion 'Java 17'
+    }
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_API_KEY") ?: ""
+    projectId = modrinth_project_id
+    changelog = System.getenv("CHANGELOG") ?: "Changelog not available."
+    versionNumber = "MC${minecraft_version}-${minecraft_sdk}-${semver}"
+    versionName = "${rootProject.name}-${version}"
+    versionType = 'release'
+    uploadFile = jar
+    gameVersions = [minecraft_version]
+    dependencies {
+        required.project 'P7dR8mSH' // Fabric API
     }
 }
 
