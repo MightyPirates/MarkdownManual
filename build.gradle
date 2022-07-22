@@ -24,10 +24,7 @@ def getGitRef() {
 version = "${semver}+${getGitRef()}"
 group = 'li.cil.markdown_manual'
 
-java.toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
-    vendor = JvmVendorSpec.ADOPTOPENJDK
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     maven {
