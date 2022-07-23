@@ -1,11 +1,11 @@
 package li.cil.manual.client.provider;
 
-import com.machinezoo.noexception.optional.OptionalBoolean;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.prefab.provider.AbstractRendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
@@ -39,15 +39,15 @@ public final class BlockRendererProvider extends AbstractRendererProvider {
     // --------------------------------------------------------------------- //
 
     @Override
-    public OptionalBoolean matches(final ManualModel manual) {
-        return OptionalBoolean.of(true);
+    public MatchResult matches(final ManualModel manual) {
+        return MatchResult.MATCH;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
         final BlockState state = Objects.requireNonNull(BLOCK_STATE_CACHE.computeIfAbsent(data, (string) -> {
             try {
-                //noinspection deprecation
                 return BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(string), false).blockState();
             } catch (final CommandSyntaxException e) {
                 LOGGER.error("Failed parsing block state.", e);

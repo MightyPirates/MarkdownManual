@@ -1,9 +1,9 @@
 package li.cil.manual.client.provider;
 
-import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.provider.RendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import li.cil.manual.client.document.segment.render.TextureContentRenderer;
@@ -23,8 +23,8 @@ public final class TextureRendererProvider implements RendererProvider {
     }
 
     @Override
-    public OptionalBoolean matches(final ManualModel manual) {
-        return OptionalBoolean.of(true);
+    public MatchResult matches(final ManualModel manual) {
+        return MatchResult.MATCH;
     }
 
     @Override

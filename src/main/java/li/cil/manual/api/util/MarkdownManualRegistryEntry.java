@@ -1,6 +1,5 @@
 package li.cil.manual.api.util;
 
-import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
@@ -19,11 +18,12 @@ public interface MarkdownManualRegistryEntry extends Comparable<MarkdownManualRe
      * in the internal logic of the manual, such as looking up paths and content.
      *
      * @param manual the manual to check.
-     * @return {@code true} if this instance applies to the manual, {@code false} if not,
-     * {@link OptionalBoolean#empty()} if the default heuristic should be used.
+     * @return {@link MatchResult#MATCH} if this instance applies to the manual,
+     * {@link MatchResult#MISMATCH} if not, {@link MatchResult#PASS} if the default
+     * heuristic should be used.
      */
-    default OptionalBoolean matches(final ManualModel manual) {
-        return OptionalBoolean.empty();
+    default MatchResult matches(final ManualModel manual) {
+        return MatchResult.PASS;
     }
 
     /**

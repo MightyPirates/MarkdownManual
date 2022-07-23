@@ -1,16 +1,16 @@
 package li.cil.manual.client.provider;
 
-import com.machinezoo.noexception.optional.OptionalBoolean;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.prefab.provider.AbstractRendererProvider;
 import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -26,8 +26,8 @@ public final class ItemRendererProvider extends AbstractRendererProvider {
     // --------------------------------------------------------------------- //
 
     @Override
-    public OptionalBoolean matches(final ManualModel manual) {
-        return OptionalBoolean.of(true);
+    public MatchResult matches(final ManualModel manual) {
+        return MatchResult.MATCH;
     }
 
     @Override

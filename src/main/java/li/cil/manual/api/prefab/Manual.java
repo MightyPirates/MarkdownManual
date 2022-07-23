@@ -205,12 +205,15 @@ public class Manual implements ManualModel {
     }
 
     protected <T extends MarkdownManualRegistryEntry> boolean matches(final ForgeRegistry<T> registry, final T entry) {
-        return entry.matches(this).orElseGet(() -> {
-            final ResourceLocation entryId = registry.getKey(entry);
-            final ResourceLocation manualId = RegistryManager.ACTIVE.getRegistry(Constants.MANUAL_REGISTRY).getKey(this);
-            return entryId != null && manualId != null &&
-                Objects.equals(entryId.getNamespace(), manualId.getNamespace());
-        });
+        return switch (entry.matches(this)) {
+            case PASS -> {
+                final ResourceLocation entryId = registry.getKey(entry);
+                final ResourceLocation manualId = RegistryManager.ACTIVE.getRegistry(Constants.MANUAL_REGISTRY).getKey(this);
+                yield entryId != null && manualId != null && Objects.equals(entryId.getNamespace(), manualId.getNamespace());
+            }
+            case MATCH -> true;
+            case MISMATCH -> false;
+        };
     }
 
     /**
