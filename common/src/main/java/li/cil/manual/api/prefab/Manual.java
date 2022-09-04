@@ -1,0 +1,270 @@
+package li.cil.manual.api.prefab;
+
+import com.google.common.base.Suppliers;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.Registries;
+import li.cil.manual.api.ManualModel;
+import li.cil.manual.api.Tab;
+import li.cil.manual.api.content.Document;
+import li.cil.manual.api.render.ContentRenderer;
+import li.cil.manual.api.util.Constants;
+import li.cil.manual.api.util.MarkdownManualRegistryEntry;
+import li.cil.manual.api.util.PathUtils;
+import li.cil.manual.client.document.Strings;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+/**
+ * Simple implementation of the {@link ManualModel} interface which should cover most use-cases.
+ */
+public class Manual implements ManualModel {
+    /**
+     * The magic first characters indicating a redirect in a document, with the target path following.
+     */
+    private static final String REDIRECT_PRAGMA = "#redirect ";
+
+    private static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(Constants.MOD_ID));
+
+    // ----------------------------------------------------------------------- //
+
+    /**
+     * The current navigation history for this manual.
+     */
+    protected final List<History> history = new ArrayList<>();
+
+    /**
+     * The current index in the navigation history. We keep pages we came back from
+     * at the back of the list to allow navigating back forwards, retaining the stored
+     * scroll offset of these pages.
+     */
+    protected int historyIndex;
+
+    // ----------------------------------------------------------------------- //
+
+    public Manual() {
+        reset();
+    }
+
+    // ----------------------------------------------------------------------- //
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<String> pathFor(final ItemStack stack) {
+        return find(Constants.PATH_PROVIDER_REGISTRY, provider -> provider.pathFor(stack));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
+        return find(Constants.PATH_PROVIDER_REGISTRY, provider -> provider.pathFor(world, pos, face));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Document> documentFor(final String path) {
+        final String language = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
+        final Optional<Document> document = documentFor(path.replace(LANGUAGE_KEY, language), language, new LinkedHashSet<>());
+        return document.isPresent() ? document : documentFor(path.replace(LANGUAGE_KEY, FALLBACK_LANGUAGE), FALLBACK_LANGUAGE, new LinkedHashSet<>());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<ContentRenderer> imageFor(final String path) {
+        return find(Constants.RENDERER_PROVIDER_REGISTRY, provider -> provider.getRenderer(path));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Tab> getTabs() {
+
+        final Registrar<Tab> registry = REGISTRIES.get().get(Constants.TAB_REGISTRY);
+        return StreamSupport.stream(registry.spliterator(), false).
+            filter(tab -> matches(registry, tab)).
+            collect(Collectors.toList());
+    }
+
+    // ----------------------------------------------------------------------- //
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset() {
+        history.clear();
+        history.add(createHistoryEntry(StringUtils.stripStart(getStartPage(), "/")));
+        historyIndex = 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void push(final String path) {
+        if (path.startsWith("/")) throw new IllegalArgumentException("Path must not start with a slash.");
+        if (Objects.equals(history.get(historyIndex).path, path)) {
+            return;
+        }
+
+        // Try to re-use "future" entry.
+        if (history.size() > historyIndex + 1 && Objects.equals(history.get(historyIndex + 1).path, path)) {
+            historyIndex++;
+            return;
+        }
+
+        // Remove "future" entries we kept to navigate back forwards.
+        while (history.size() > historyIndex + 1) {
+            history.remove(history.size() - 1);
+        }
+
+        history.add(createHistoryEntry(path));
+        historyIndex++;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public boolean pop() {
+        if (historyIndex <= 0) {
+            return false;
+        }
+
+        historyIndex--;
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String peek() {
+        return history.get(historyIndex).path;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String resolve(final String path) {
+        return PathUtils.resolve(peek(), path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> getUserData(final Class<T> type) {
+        return Optional.ofNullable((T) history.get(historyIndex).userData.get(type));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public <T> void setUserData(final T value) {
+        history.get(historyIndex).userData.put(value.getClass(), value);
+    }
+
+    // ----------------------------------------------------------------------- //
+
+    protected String getStartPage() {
+        return LANGUAGE_KEY + "/index.md";
+    }
+
+    protected History createHistoryEntry(final String path) {
+        return new History(path);
+    }
+
+    protected <TProvider extends MarkdownManualRegistryEntry, TResult> Optional<TResult> find(final ResourceKey<Registry<TProvider>> key, final Function<TProvider, Optional<TResult>> lookup) {
+        final Registrar<TProvider> registry = REGISTRIES.get().get(key);
+        return registry.entrySet().stream().
+            map(Map.Entry::getValue).
+            filter(provider -> matches(registry, provider)).
+            sorted().map(lookup).filter(Optional::isPresent).findFirst().flatMap(x -> x);
+    }
+
+    protected <T extends MarkdownManualRegistryEntry> boolean matches(final Registrar<T> registry, final T entry) {
+        return switch (entry.matches(this)) {
+            case PASS -> {
+                final Optional<ResourceKey<T>> entryId = registry.getKey(entry);
+                final Optional<ResourceKey<ManualModel>> manualId = REGISTRIES.get().get(Constants.MANUAL_REGISTRY).getKey(this);
+                yield entryId.isPresent() && manualId.isPresent() && Objects.equals(entryId.get().location().getNamespace(), manualId.get().location().getNamespace());
+            }
+            case MATCH -> true;
+            case MISMATCH -> false;
+        };
+    }
+
+    /**
+     * Loads the document from the specified path, in the specified language.
+     * <p>
+     * This method may perform additional processing on the loaded documents. The default implementation
+     * will resolve redirects and trim leading and trailing blank lines.
+     *
+     * @param path     the path of the document to load.
+     * @param language the language of the document to load.
+     * @param seen     a set of already seen documents in the loading process, used to break cycles in redirects.
+     * @return the loaded document.
+     */
+    protected Optional<Document> documentFor(final String path, final String language, final Set<String> seen) {
+        if (!seen.add(path)) {
+            final List<String> message = new ArrayList<>();
+            message.add(Strings.getRedirectionLoopText());
+            message.addAll(seen);
+            message.add(path);
+            return Optional.of(new Document(message));
+        }
+
+        return find(Constants.DOCUMENT_PROVIDER_REGISTRY, provider -> provider.getDocument(path, language)).flatMap(document -> {
+            // Read first line only to check for redirect.
+            final List<String> lines = document.getLines();
+            if (!lines.isEmpty() && lines.get(0).toLowerCase().startsWith(REDIRECT_PRAGMA)) {
+                final String redirectPath = lines.get(0).substring(REDIRECT_PRAGMA.length()).trim();
+                return documentFor(PathUtils.resolve(path, redirectPath), language, seen);
+            }
+
+            // Trim leading and trailing blank lines. Mostly for the trailing ones, to avoid scrolling being weird.
+            while (!lines.isEmpty() && StringUtils.isWhitespace(lines.get(0))) {
+                lines.remove(0);
+            }
+            while (!lines.isEmpty() && StringUtils.isWhitespace(lines.get(lines.size() - 1))) {
+                lines.remove(lines.size() - 1);
+            }
+            return Optional.of(document);
+        });
+    }
+
+    // --------------------------------------------------------------------- //
+
+    protected static class History {
+        public final String path;
+        public final Map<Class<?>, Object> userData = new HashMap<>();
+
+        public History(final String path) {
+            this.path = path;
+        }
+    }
+}

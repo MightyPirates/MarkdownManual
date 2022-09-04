@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "markdown_manual",
+  "version": "${version}",
+  "name": "Markdown Manual",
+  "description": "Library mod providing a convenient way of defining in-game manuals.",
+  "authors": [
+    "Sangar"
+  ],
+  "contact": {
+    "sources": "https://github.com/MightyPirates/MarkdownManual"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "li.cil.manual.client.fabric.MarkdownManualFabric"
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.19.2",
+    "architectury": ">=6.2.43"
+  }
+}

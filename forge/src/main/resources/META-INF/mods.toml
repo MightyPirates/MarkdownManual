@@ -1,0 +1,34 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+issueTrackerURL = "https://github.com/MightyPirates/MarkdownManual/issues"
+license = "MIT"
+
+[[mods]]
+modId = "markdown_manual"
+version = "${version}"
+displayName = "Markdown Manual"
+authors = "Sangar"
+description = '''
+Library mod providing a convenient way of defining in-game manuals.
+'''
+
+[[dependencies.markdown_manual]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.markdown_manual]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.markdown_manual]]
+modId = "architectury"
+mandatory = true
+versionRange = "[6.2.43,)"
+ordering = "AFTER"
+side = "BOTH"

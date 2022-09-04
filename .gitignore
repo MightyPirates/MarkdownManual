@@ -2,7 +2,8 @@
 .DS_Store
 
 # eclipse
-bin
+eclipse/
+bin/
 *.launch
 .settings
 .metadata
@@ -10,25 +11,20 @@ bin
 .project
 
 # idea
-out
+out/
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/
 
 # gradle
-build
+build/
 .gradle
 
 # other
-eclipse
-run
-logs
+run/
+logs/
 /assets/
-
-# Files from Forge MDK
-forge*changelog.txt
-/src/generated/
 
 #vscode
 .vscode
