@@ -37,19 +37,37 @@ jobs:
           asset_paths: '["./forge/build/libs/*.jar","./fabric/build/libs/*.jar"]'
 
       - name: Publish to Github Packages
-        run: gradle -Psemver='${{ github.event.release.tag_name }}' publish
+        run: gradle -Psemver='${{ github.event.release.tag_name }}' forge:publish
+        env:
+          GITHUB_MAVEN_URL: 'https://maven.pkg.github.com/${{ github.repository }}'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Github Packages
+        run: gradle -Psemver='${{ github.event.release.tag_name }}' fabric:publish
         env:
           GITHUB_MAVEN_URL: 'https://maven.pkg.github.com/${{ github.repository }}'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to Curseforge
-        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' curseforge
+        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' forge:curseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          CHANGELOG: ${{ github.event.release.body }}
+
+      - name: Publish to Curseforge
+        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' fabric:curseforge
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           CHANGELOG: ${{ github.event.release.body }}
 
       - name: Publish to modrinth
-        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' modrinth
+        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' forge:modrinth
+        env:
+          MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+          CHANGELOG: ${{ github.event.release.body }}
+
+      - name: Publish to modrinth
+        run: ./gradlew -Psemver='${{ github.event.release.tag_name }}' fabric:modrinth
         env:
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
           CHANGELOG: ${{ github.event.release.body }}
