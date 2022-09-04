@@ -73,7 +73,7 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = project.archivesBaseName
+            artifactId = "${rootProject.archives_base_name}-${rootProject.minecraft_version}-${project.name}"
             from components.java
         }
     }

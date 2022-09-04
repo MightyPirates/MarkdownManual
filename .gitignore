@@ -25,6 +25,7 @@ build/
 run/
 logs/
 /assets/
+.architectury-transformer/
 
 #vscode
 .vscode
