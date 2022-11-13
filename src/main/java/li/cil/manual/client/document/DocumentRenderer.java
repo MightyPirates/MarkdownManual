@@ -6,12 +6,14 @@ import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.client.document.segment.*;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -180,19 +182,21 @@ public final class DocumentRenderer {
             return Optional.empty();
         }
 
-        // Clear depth mask, then create masks in foreground above and below scroll area.
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
+        final Vector4f bottomLeft = new Vector4f(0, height, 0, 1);
+        bottomLeft.transform(matrixStack.last().pose());
 
-        // Tow options here, disable alpha testing or disable color output. We pick the former.
-        RenderSystem.disableAlphaTest();
+        final Vector4f topRight = new Vector4f(width, 0, 0, 1);
+        topRight.transform(matrixStack.last().pose());
 
-        matrixStack.pushPose();
-        matrixStack.translate(0, 0, 500);
-        Screen.fill(matrixStack, -10, -1000, width + 20, 0, 0);
-        Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0);
-        matrixStack.popPose();
+        final MainWindow window = Minecraft.getInstance().getWindow();
+        final double windowHeight = window.getHeight();
+        final double scale = window.getGuiScale();
+        final int x0 = MathHelper.floor(bottomLeft.x() * scale);
+        final int y0 = MathHelper.floor(windowHeight - bottomLeft.y() * scale);
+        final int x1 = MathHelper.ceil(topRight.x() * scale);
+        final int y1 = MathHelper.ceil(windowHeight - topRight.y() * scale);
 
-        RenderSystem.enableAlphaTest();
+        RenderSystem.enableScissor(x0, y0, x1 - x0, y1 - y0);
 
         // Actual rendering.
         final boolean isMouseOverDocument = mouseX >= 0 || mouseX <= width || mouseY >= 0 || mouseY <= height;
@@ -265,7 +269,7 @@ public final class DocumentRenderer {
 
         setHoveredSegment(hovered.orElse(null));
 
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
+        RenderSystem.disableScissor();
 
         return hovered;
     }
