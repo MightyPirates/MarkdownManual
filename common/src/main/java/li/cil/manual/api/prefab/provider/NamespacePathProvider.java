@@ -4,7 +4,7 @@ import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.provider.PathProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,8 +43,8 @@ public class NamespacePathProvider implements PathProvider {
         final Item item = stack.getItem();
         final Block block = Block.byItem(item);
         if (block != Blocks.AIR) {
-            final ResourceLocation blockId = Registry.BLOCK.getKey(block);
-            if (blockId == Registry.BLOCK.getDefaultKey()) {
+            final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+            if (blockId == BuiltInRegistries.BLOCK.getDefaultKey()) {
                 return Optional.empty();
             }
 
@@ -56,8 +56,8 @@ public class NamespacePathProvider implements PathProvider {
                     .replace(PATH, blockId.getPath()));
             }
         } else {
-            final ResourceLocation itemId = Registry.ITEM.getKey(item);
-            if (itemId == Registry.ITEM.getDefaultKey()) {
+            final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+            if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
                 return Optional.empty();
             }
 
@@ -76,8 +76,8 @@ public class NamespacePathProvider implements PathProvider {
     @Override
     public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
         final Block block = world.getBlockState(pos).getBlock();
-        final ResourceLocation blockId = Registry.BLOCK.getKey(block);
-        if (blockId == Registry.BLOCK.getDefaultKey()) {
+        final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+        if (blockId == BuiltInRegistries.BLOCK.getDefaultKey()) {
             return Optional.empty();
         }
 

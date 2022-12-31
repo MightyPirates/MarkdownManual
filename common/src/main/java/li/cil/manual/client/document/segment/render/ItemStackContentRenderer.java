@@ -2,10 +2,10 @@ package li.cil.manual.client.document.segment.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector4f;
 import li.cil.manual.api.render.ContentRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector4f;
 
 public final class ItemStackContentRenderer implements ContentRenderer {
     /**
@@ -47,8 +47,8 @@ public final class ItemStackContentRenderer implements ContentRenderer {
         // This is *nasty*, but sadly there's no renderItemAndEffectIntoGUI() variant that
         // takes a MatrixStack. Yet.
 
-        final Vector4f position = new Vector4f(0, 0, 0, 1);
-        position.transform(matrixStack.last().pose());
+        final var position = new Vector4f();
+        position.mul(matrixStack.last().pose());
 
         final PoseStack renderSystemPoseStack = RenderSystem.getModelViewStack();
         renderSystemPoseStack.pushPose();

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import li.cil.manual.api.render.FontRenderer;
@@ -154,7 +153,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         final float u = column * U_STEP;
         final float v = row * V_STEP;
 
-        final Matrix4f matrix = matrixStack.last().pose();
+        final var matrix = matrixStack.last().pose();
         buffer.vertex(matrix, x, lineHeight(), 0)
             .color(r, g, b, a)
             .uv(u, v + V_SIZE)
@@ -203,7 +202,9 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         // --------------------------------------------------------------------- //
 
         private FontRenderTypes() {
-            super("", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, () -> {}, () -> {});
+            super("", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, () -> {
+            }, () -> {
+            });
             throw new UnsupportedOperationException("No meant to be instantiated.");
         }
     }

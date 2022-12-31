@@ -2,10 +2,10 @@ package li.cil.manual.api.prefab.tab;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector4f;
 
 import javax.annotation.Nullable;
 
@@ -25,8 +25,8 @@ public final class ItemStackTab extends AbstractTab {
         // This is *nasty*, but sadly there's no renderItemAndEffectIntoGUI() variant that
         // takes a MatrixStack. Yet.
 
-        final Vector4f position = new Vector4f(0, 0, 0, 1);
-        position.transform(matrixStack.last().pose());
+        final var position = new Vector4f();
+        position.mul(matrixStack.last().pose());
 
         final PoseStack renderSystemPoseStack = RenderSystem.getModelViewStack();
         renderSystemPoseStack.pushPose();

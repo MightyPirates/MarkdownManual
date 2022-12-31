@@ -1,7 +1,6 @@
 package li.cil.manual.client.document.segment;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
 import li.cil.manual.api.util.PathUtils;
@@ -82,7 +81,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
             mouseY >= y && mouseY <= y + height;
         if (isHovered) {
             DocumentRenderTypes.draw(DocumentRenderTypes.highlight(), (buffer) -> {
-                final Matrix4f matrix = matrixStack.last().pose();
+                final var matrix = matrixStack.last().pose();
 
                 final float r = 0.2f, g = 0.4f, b = 0.6f, a = 0.25f;
 
