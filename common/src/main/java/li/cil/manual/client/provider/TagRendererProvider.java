@@ -7,7 +7,7 @@ import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -28,10 +28,10 @@ public final class TagRendererProvider extends AbstractRendererProvider {
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
         final ResourceLocation location = new ResourceLocation(data);
-        return Registry.ITEM.getTagNames()
+        return BuiltInRegistries.ITEM.getTagNames()
             .filter(key -> key.location().equals(location))
             .findFirst()
-            .flatMap(Registry.ITEM::getTag)
+            .flatMap(BuiltInRegistries.ITEM::getTag)
             .map(tag -> (ContentRenderer) new ItemStackContentRenderer(tag
                 .stream()
                 .map(ItemStack::new)

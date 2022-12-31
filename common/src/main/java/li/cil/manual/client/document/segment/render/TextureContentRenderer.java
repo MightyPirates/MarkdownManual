@@ -2,7 +2,6 @@ package li.cil.manual.client.document.segment.render;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.client.document.DocumentRenderTypes;
 import net.minecraft.client.Minecraft;
@@ -51,7 +50,7 @@ public class TextureContentRenderer implements ContentRenderer {
     @Override
     public void render(final PoseStack matrixStack, final int mouseX, final int mouseY) {
         DocumentRenderTypes.draw(DocumentRenderTypes.texture(location), (buffer) -> {
-            final Matrix4f matrix = matrixStack.last().pose();
+            final var matrix = matrixStack.last().pose();
             buffer.vertex(matrix, 0, texture.height, 0).uv(0, 1).endVertex();
             buffer.vertex(matrix, texture.width, texture.height, 0).uv(1, 1).endVertex();
             buffer.vertex(matrix, texture.width, 0, 0).uv(1, 0).endVertex();

@@ -2,7 +2,7 @@ package li.cil.manual.api.prefab;
 
 import com.google.common.base.Suppliers;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.Registries;
+import dev.architectury.registry.registries.RegistrarManager;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.Tab;
 import li.cil.manual.api.content.Document;
@@ -35,7 +35,7 @@ public class Manual implements ManualModel {
      */
     private static final String REDIRECT_PRAGMA = "#redirect ";
 
-    private static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(Constants.MOD_ID));
+    private static final Supplier<RegistrarManager> REGISTRIES = Suppliers.memoize(() -> RegistrarManager.get(Constants.MOD_ID));
 
     // ----------------------------------------------------------------------- //
 

@@ -7,7 +7,7 @@ import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ public final class ItemRendererProvider extends AbstractRendererProvider {
 
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
-        final Item item = Registry.ITEM.get(new ResourceLocation(data));
+        final Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(data));
         if (item != Items.AIR) {
             return Optional.of(new ItemStackContentRenderer(new ItemStack(item)));
         } else {

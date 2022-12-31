@@ -10,7 +10,7 @@ import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.ItemStackContentRenderer;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,7 +44,7 @@ public final class BlockRendererProvider extends AbstractRendererProvider {
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
         final BlockState state = Objects.requireNonNull(BLOCK_STATE_CACHE.computeIfAbsent(data, (string) -> {
             try {
-                return BlockStateParser.parseForBlock(Registry.BLOCK, new StringReader(string), false).blockState();
+                return BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(string), false).blockState();
             } catch (final CommandSyntaxException e) {
                 LOGGER.error("Failed parsing block state.", e);
                 return Blocks.AIR.defaultBlockState();

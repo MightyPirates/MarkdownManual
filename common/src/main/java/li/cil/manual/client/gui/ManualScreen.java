@@ -11,17 +11,18 @@ import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.segment.InteractiveSegment;
 import li.cil.manual.client.util.IterableUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import org.joml.Vector2i;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public final class ManualScreen extends Screen {
     private int topPos = 0;
     private float scrollPos = 0;
 
-    private boolean isDragging = false;
+    private boolean isDraggingScrollButton = false;
     private int documentHeight = 0;
     private Optional<InteractiveSegment> currentSegment = Optional.empty();
 
@@ -65,7 +66,7 @@ public final class ManualScreen extends Screen {
             addRenderableWidget(new TabButton(leftPos + x, topPos + y, tab, (button) -> pushManualPage(tab)));
         });
 
-        scrollButton = addRenderableWidget(new ScrollButton(
+        scrollButton = addWidget(new ScrollButton(
             leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollButtonRect().getX(),
             topPos + screenStyle.getScrollBarRect().getY() + screenStyle.getScrollButtonRect().getY(),
             screenStyle.getScrollButtonRect().getWidth(),
@@ -100,6 +101,9 @@ public final class ManualScreen extends Screen {
         final Rect2i windowRect = screenStyle.getWindowRect();
         blit(matrixStack, leftPos, topPos, 0, 0, windowRect.getWidth(), windowRect.getHeight(), windowRect.getWidth(), windowRect.getHeight());
 
+        // Render scroll bar tooltip (button will override this tooltip if currently dragging).
+        renderScrollbarTooltip(mouseX, mouseY);
+
         // Render scroll button in front of manual.
         scrollButton.active = canScroll();
         scrollButton.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -119,14 +123,6 @@ public final class ManualScreen extends Screen {
 
         currentSegment.flatMap(InteractiveSegment::getTooltip).ifPresent(t ->
             renderComponentTooltip(matrixStack, Collections.singletonList(t), mouseX, mouseY));
-
-        for (final GuiEventListener widget : this.children()) {
-            if (widget instanceof final AbstractWidget button) {
-                if (button.active && (!isDragging || widget == scrollButton)) {
-                    button.renderToolTip(matrixStack, mouseX, mouseY);
-                }
-            }
-        }
     }
 
     @Override
@@ -163,7 +159,7 @@ public final class ManualScreen extends Screen {
         }
 
         if (canScroll() && button == 0 && isCoordinateOverScrollBar(mouseX, mouseY)) {
-            isDragging = true;
+            isDraggingScrollButton = true;
             scrollButton.playDownSound(Minecraft.getInstance().getSoundManager());
             scrollTo(mouseY);
             return true;
@@ -183,7 +179,7 @@ public final class ManualScreen extends Screen {
             return true;
         }
 
-        if (isDragging) {
+        if (isDraggingScrollButton) {
             scrollTo(mouseY);
             return true;
         }
@@ -196,7 +192,7 @@ public final class ManualScreen extends Screen {
         super.mouseReleased(mouseX, mouseY, button);
 
         if (button == 0) {
-            isDragging = false;
+            isDraggingScrollButton = false;
         }
 
         return true;
@@ -208,6 +204,12 @@ public final class ManualScreen extends Screen {
     }
 
     // --------------------------------------------------------------------- //
+
+    private void renderScrollbarTooltip(final int mouseX, final int mouseY) {
+        if (isCoordinateOverScrollBar(mouseX, mouseY)) {
+            scrollButton.applyTooltip(false);
+        }
+    }
 
     private void pushManualPage(final Tab tab) {
         model.push(tab.getPath());
@@ -299,24 +301,11 @@ public final class ManualScreen extends Screen {
         private int targetX;
 
         TabButton(final int x, final int y, final Tab tab, final OnPress action) {
-            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), Component.empty(), action);
+            super(x, y, screenStyle.getTabRect().getWidth(), getTabClickableHeight(), Component.empty(), action, DEFAULT_NARRATION);
             this.tab = tab;
             this.baseX = x;
             this.currentX = x + screenStyle.getTabHoverShift();
             this.targetX = (int) currentX;
-        }
-
-        @Override
-        public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
-            if (!isHoveredOrFocused()) {
-                return;
-            }
-
-            final List<Component> tooltip = new ArrayList<>();
-            tab.getTooltip(tooltip);
-            if (!tooltip.isEmpty()) {
-                ManualScreen.this.renderComponentTooltip(matrixStack, tooltip, mouseX, mouseY);
-            }
         }
 
         @Override
@@ -330,12 +319,12 @@ public final class ManualScreen extends Screen {
             currentX = Mth.lerp(partialTicks * 0.5f, currentX, targetX);
 
             if (currentX < targetX) {
-                x = (int) Math.ceil(currentX);
+                setX((int) Math.ceil(currentX));
             } else {
-                x = (int) Math.floor(currentX);
+                setX((int) Math.floor(currentX));
             }
 
-            width = screenStyle.getTabAreaRect().getWidth() - (x - baseX);
+            width = screenStyle.getTabAreaRect().getWidth() - (getX() - baseX);
 
             final int v0 = isHoveredOrFocused() ? screenStyle.getTabRect().getHeight() : 0;
             final int visualWidth = screenStyle.getTabRect().getWidth();
@@ -345,14 +334,33 @@ public final class ManualScreen extends Screen {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, screenStyle.getTabButtonTexture());
-            blit(matrixStack, x, y, 0, v0, visualWidth, visualHeight, textureWidth, textureHeight);
+            blit(matrixStack, getX(), getY(), 0, v0, visualWidth, visualHeight, textureWidth, textureHeight);
 
             matrixStack.pushPose();
-            matrixStack.translate(x + 12, (float) (y + (screenStyle.getTabRect().getHeight() - 18) / 2), 0);
+            matrixStack.translate(getX() + 12, (float) (getY() + (screenStyle.getTabRect().getHeight() - 18) / 2), 0);
 
             tab.renderIcon(matrixStack);
 
             matrixStack.popPose();
+
+            updateTooltip();
+        }
+
+        private void updateTooltip() {
+            if (!isHoveredOrFocused() || isDraggingScrollButton) {
+                return;
+            }
+
+            final var tooltip = new ArrayList<Component>();
+            tab.getTooltip(tooltip);
+            if (tooltip.isEmpty()) {
+                return;
+            }
+
+            final var screen = Minecraft.getInstance().screen;
+            if (screen != null) {
+                screen.setTooltipForNextRenderPass(tooltip.stream().map(Component::getVisualOrderText).toList());
+            }
         }
 
         @Override
@@ -367,7 +375,7 @@ public final class ManualScreen extends Screen {
 
         ScrollButton(final int x, final int y, final int w, final int h) {
             super(x, y, w, h, Component.empty(), (button) -> {
-            });
+            }, DEFAULT_NARRATION);
             this.baseY = y;
         }
 
@@ -381,16 +389,16 @@ public final class ManualScreen extends Screen {
 
         @Override
         public void renderButton(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-            y = baseY + getScrollButtonY();
+            setY(baseY + getScrollButtonY());
 
-            final int x0 = x;
+            final int x0 = getX();
             final int x1 = x0 + width;
-            final int y0 = y;
+            final int y0 = getY();
             final int y1 = y0 + height;
 
             final float u0 = 0;
             final float u1 = u0 + 1;
-            final float v0 = (isDragging || isHoveredOrFocused()) ? 0.5f : 0;
+            final float v0 = (isDraggingScrollButton || isHoveredOrFocused()) ? 0.5f : 0;
             final float v1 = v0 + 0.5f;
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -404,16 +412,33 @@ public final class ManualScreen extends Screen {
             builder.vertex(x1, y0, getBlitOffset()).uv(u1, v0).endVertex();
             builder.vertex(x0, y0, getBlitOffset()).uv(u0, v0).endVertex();
             t.end();
+
+            updateTooltip();
         }
 
-        @Override
-        public void renderToolTip(final PoseStack matrixStack, final int mouseX, final int mouseY) {
-            if (!isDragging && !isHoveredOrFocused() && !isCoordinateOverScrollBar(mouseX, mouseY)) {
+        public void applyTooltip(final boolean fixedY) {
+            final var screen = Minecraft.getInstance().screen;
+            if (screen != null) {
+                screen.setTooltipForNextRenderPass(getTooltipContent(), getClientTooltipPositioner(fixedY), true);
+            }
+        }
+
+        private void updateTooltip() {
+            if (!isHoveredOrFocused() && !isDraggingScrollButton) {
                 return;
             }
-            renderTooltip(matrixStack, Component.literal(100 * getScrollPosition() / maxScrollPosition() + "%"),
+
+            applyTooltip(true);
+        }
+
+        private List<FormattedCharSequence> getTooltipContent() {
+            return List.of(Component.literal(100 * getScrollPosition() / maxScrollPosition() + "%").getVisualOrderText());
+        }
+
+        private ClientTooltipPositioner getClientTooltipPositioner(final boolean fixedY) {
+            return (screen, mouseX, mouseY, tooltipWidth, tooltipHeight) -> new Vector2i(
                 leftPos + screenStyle.getScrollBarRect().getX() + screenStyle.getScrollBarRect().getWidth(),
-                y + (getHeight() + TOOLTIP_HEIGHT) / 2);
+                fixedY ? getY() + (getHeight() + TOOLTIP_HEIGHT) / 2 : mouseY);
         }
     }
 }
