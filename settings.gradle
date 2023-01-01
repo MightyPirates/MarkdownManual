@@ -11,4 +11,4 @@ include("common")
 include("fabric")
 include("forge")
 
-rootProject.name = "markdown_manual"
+rootProject.name = archives_base_name
