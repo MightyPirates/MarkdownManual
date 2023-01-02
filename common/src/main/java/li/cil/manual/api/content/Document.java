@@ -1,6 +1,5 @@
 package li.cil.manual.api.content;
 
-
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
