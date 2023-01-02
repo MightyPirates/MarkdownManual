@@ -45,7 +45,7 @@ shadowJar {
 
 remapJar {
     injectAccessWidener = true
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier null
 }
@@ -53,6 +53,8 @@ remapJar {
 jar {
     classifier "dev"
 }
+
+def commonApiJar = project(":common").apiJar
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
@@ -101,9 +103,11 @@ curseforge {
             requiredDependency "architectury-api"
             requiredDependency "forge-config-api-port-fabric"
         }
-        mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        mainArtifact(remapJar)
+        addArtifact(commonApiJar)
         afterEvaluate {
             uploadTask.dependsOn(remapJar)
+            uploadTask.dependsOn(commonApiJar)
         }
     }
     options {
