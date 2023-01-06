@@ -58,8 +58,6 @@ jar {
     classifier "dev"
 }
 
-def commonApiJar = project(":common").apiJar
-
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
@@ -106,10 +104,8 @@ curseforge {
             requiredDependency "architectury-api"
         }
         mainArtifact(remapJar)
-        addArtifact(commonApiJar)
         afterEvaluate {
             uploadTask.dependsOn(remapJar)
-            uploadTask.dependsOn(commonApiJar)
         }
     }
 }
