@@ -1,7 +1,6 @@
 package li.cil.manual.api.prefab.renderer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
 
 import java.util.Optional;
 
@@ -42,13 +42,13 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     /**
      * {@inheritDoc}
      */
-    public void drawBatch(final PoseStack matrixStack, final MultiBufferSource bufferFactory, final CharSequence value, final int argb) {
+    public void drawInBatch(final CharSequence value, final int argb, final Matrix4f matrix, final MultiBufferSource bufferFactory) {
         final VertexConsumer buffer = getDefaultBuffer(bufferFactory);
 
         float tx = 0f;
         for (int i = 0; i < value.length(); i++) {
             final char ch = value.charAt(i);
-            drawChar(matrixStack, buffer, argb, tx, ch);
+            drawChar(matrix, buffer, argb, tx, ch);
             tx += width(" ") + getGapU();
         }
     }
@@ -136,7 +136,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         return bufferFactory.getBuffer(renderLayer);
     }
 
-    private void drawChar(final PoseStack matrixStack, final VertexConsumer buffer, final int argb, final float x, final char ch) {
+    private void drawChar(final Matrix4f matrix, final VertexConsumer buffer, final int argb, final float x, final char ch) {
         if (Character.isWhitespace(ch) || Character.isISOControl(ch)) {
             return;
         }
@@ -153,7 +153,6 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         final float u = column * U_STEP;
         final float v = row * V_STEP;
 
-        final var matrix = matrixStack.last().pose();
         buffer.vertex(matrix, x, lineHeight(), 0)
             .color(r, g, b, a)
             .uv(u, v + V_SIZE)

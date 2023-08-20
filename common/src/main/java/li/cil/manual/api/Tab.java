@@ -1,7 +1,7 @@
 package li.cil.manual.api;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.util.MarkdownManualRegistryEntry;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public interface Tab extends MarkdownManualRegistryEntry {
      * This should render something in a 16x16 area. The OpenGL state has been
      * adjusted so that drawing starts at (0,0,0), and should go to (16,16,0).
      *
-     * @param matrixStack the current matrix stack.
+     * @param graphics the current graphics context.
      */
-    void renderIcon(PoseStack matrixStack);
+    void renderIcon(GuiGraphics graphics);
 
     /**
      * The (ideally localized) tooltip for the tab.

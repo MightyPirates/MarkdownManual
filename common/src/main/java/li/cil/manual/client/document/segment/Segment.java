@@ -1,6 +1,6 @@
 package li.cil.manual.client.document.segment;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -53,7 +53,7 @@ public interface Segment {
      * Render the segment at the specified coordinates with the specified
      * properties.
      *
-     * @param matrixStack   the current matrix stack.
+     * @param graphics      the current graphics context.
      * @param segmentX      the current indentation.
      * @param lineHeight    the maximum height of the current line.
      * @param documentWidth the maximum width of the document.
@@ -61,7 +61,7 @@ public interface Segment {
      * @param mouseY        the y mouse position.
      * @return the hovered interactive segment, if any.
      */
-    Optional<InteractiveSegment> render(final PoseStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY);
+    Optional<InteractiveSegment> render(final GuiGraphics graphics, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY);
 
     // ----------------------------------------------------------------------- //
 

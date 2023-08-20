@@ -1,6 +1,5 @@
 package li.cil.manual.client.document.segment;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
 import li.cil.manual.api.util.PathUtils;
@@ -8,6 +7,7 @@ import li.cil.manual.client.document.DocumentRenderTypes;
 import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -61,7 +61,7 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
     }
 
     @Override
-    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final GuiGraphics graphics, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
         final int width = imageWidth(segmentX, documentWidth);
         final int height = imageHeight(segmentX, documentWidth);
 
@@ -73,15 +73,16 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
 
         final float scale = scale(segmentX, documentWidth);
 
-        matrixStack.pushPose();
-        matrixStack.translate(x, y, 0);
-        matrixStack.scale(scale, scale, scale);
+        final var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(x, y, 0);
+        pose.scale(scale, scale, scale);
 
         final boolean isHovered = mouseX >= x && mouseX <= x + width &&
             mouseY >= y && mouseY <= y + height;
         if (isHovered) {
             DocumentRenderTypes.draw(DocumentRenderTypes.highlight(), (buffer) -> {
-                final var matrix = matrixStack.last().pose();
+                final var matrix = pose.last().pose();
 
                 final float r = 0.2f, g = 0.4f, b = 0.6f, a = 0.25f;
 
@@ -92,9 +93,9 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
             });
         }
 
-        renderer.render(matrixStack, mouseX, mouseY);
+        renderer.render(graphics, mouseX, mouseY);
 
-        matrixStack.popPose();
+        pose.popPose();
 
         return isHovered ? Optional.of(this) : Optional.empty();
     }

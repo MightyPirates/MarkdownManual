@@ -1,10 +1,10 @@
 package li.cil.manual.client.document.segment.render;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.client.document.DocumentRenderTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -48,9 +48,9 @@ public class TextureContentRenderer implements ContentRenderer {
     }
 
     @Override
-    public void render(final PoseStack matrixStack, final int mouseX, final int mouseY) {
+    public void render(final GuiGraphics graphics, final int mouseX, final int mouseY) {
         DocumentRenderTypes.draw(DocumentRenderTypes.texture(location), (buffer) -> {
-            final var matrix = matrixStack.last().pose();
+            final var matrix = graphics.pose().last().pose();
             buffer.vertex(matrix, 0, texture.height, 0).uv(0, 1).endVertex();
             buffer.vertex(matrix, texture.width, texture.height, 0).uv(1, 1).endVertex();
             buffer.vertex(matrix, texture.width, 0, 0).uv(1, 0).endVertex();

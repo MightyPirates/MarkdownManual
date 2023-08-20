@@ -1,9 +1,6 @@
 package li.cil.manual.api.prefab.tab;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -21,9 +18,7 @@ public final class TextureTab extends AbstractTab {
     }
 
     @Override
-    public void renderIcon(final PoseStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, location);
-        Screen.blit(matrixStack, 0, 0, 16, 16, 0, 0, 1, 1, 1, 1);
+    public void renderIcon(final GuiGraphics graphics) {
+        graphics.blit(location, 0, 0, 0, 0, 16, 16, 16, 16);
     }
 }

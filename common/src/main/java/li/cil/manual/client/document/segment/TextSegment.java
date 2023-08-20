@@ -1,10 +1,10 @@
 package li.cil.manual.client.document.segment;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.client.document.DocumentRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -72,7 +72,7 @@ public class TextSegment extends AbstractSegment {
     }
 
     @Override
-    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final GuiGraphics graphics, final int segmentX, final int lineHeight, final int documentWidth, final int mouseX, final int mouseY) {
         final String format = getFormat();
         final float scale = getFontScale() * getScale();
         final int color = getColor();
@@ -92,13 +92,14 @@ public class TextSegment extends AbstractSegment {
                 hovered.value = interactive;
             }
 
-            matrixStack.pushPose();
-            matrixStack.translate(block.x, block.y, 0);
-            matrixStack.scale(scale, scale, scale);
+            final var pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(block.x, block.y, 0);
+            pose.scale(scale, scale, scale);
 
-            getFont().drawBatch(matrixStack, bufferSource, format + block.chars, color);
+            getFont().drawInBatch(format + block.chars, color, graphics.pose().last().pose(), bufferSource);
 
-            matrixStack.popPose();
+            pose.popPose();
         });
 
         bufferSource.endBatch();
@@ -189,7 +190,7 @@ public class TextSegment extends AbstractSegment {
             int currentY = 0;
 
             int charCount = computeCharsFittingOnLine(chars, documentWidth - currentX, documentWidth - wrappedIndent);
-            while (chars.length() > 0) {
+            while (!chars.isEmpty()) {
                 final String blockChars = chars.substring(0, charCount);
                 blockCache.add(new TextBlock(
                     currentX,

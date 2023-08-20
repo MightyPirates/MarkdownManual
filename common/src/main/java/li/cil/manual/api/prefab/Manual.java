@@ -80,7 +80,7 @@ public class Manual implements ManualModel {
      */
     @Override
     public Optional<Document> documentFor(final String path) {
-        final String language = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
+        final String language = Minecraft.getInstance().getLanguageManager().getSelected();
         final Optional<Document> document = documentFor(path.replace(LANGUAGE_KEY, language), language, new LinkedHashSet<>());
         return document.isPresent() ? document : documentFor(path.replace(LANGUAGE_KEY, FALLBACK_LANGUAGE), FALLBACK_LANGUAGE, new LinkedHashSet<>());
     }

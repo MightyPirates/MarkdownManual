@@ -1,12 +1,11 @@
 package li.cil.manual.client.document;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.client.document.segment.*;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
@@ -37,13 +36,17 @@ import java.util.regex.Pattern;
 public final class DocumentRenderer {
     private final ManualModel model;
     private final ManualStyle style;
-    @Nullable private ResourceLocation location;
-    @Nullable private Segment root;
-    @Nullable private InteractiveSegment lastHovered;
+    @Nullable
+    private ResourceLocation location;
+    @Nullable
+    private Segment root;
+    @Nullable
+    private InteractiveSegment lastHovered;
 
     private int lastScrollY;
     private int lastGlobalY;
-    @Nullable private NextSegmentInfo lastFirstVisible;
+    @Nullable
+    private NextSegmentInfo lastFirstVisible;
 
     /**
      * Creates a new document instance with the specified configuration.
@@ -103,7 +106,7 @@ public final class DocumentRenderer {
             segments.get(i).setNext(segments.get(i + 1));
         }
 
-        root = segments.size() > 0 ? segments.get(0) : new TextSegment(this, null, "");
+        root = !segments.isEmpty() ? segments.get(0) : new TextSegment(this, null, "");
 
         if (lastHovered != null) {
             lastHovered.setMouseHovered(false);
@@ -164,15 +167,15 @@ public final class DocumentRenderer {
      * Renders a list of segments and tooltips if a segment with a tooltip is hovered.
      * Returns the hovered interactive segment, if any.
      *
-     * @param matrixStack the current matrix stack.
-     * @param scrollY     the vertical scroll offset of the document.
-     * @param width       the width of the area to render the document in.
-     * @param height      the height of the area to render the document in.
-     * @param mouseX      the x position of the mouse relative to the document.
-     * @param mouseY      the y position of the mouse relative to the document.
+     * @param graphics the current graphics context.
+     * @param scrollY  the vertical scroll offset of the document.
+     * @param width    the width of the area to render the document in.
+     * @param height   the height of the area to render the document in.
+     * @param mouseX   the x position of the mouse relative to the document.
+     * @param mouseY   the y position of the mouse relative to the document.
      * @return the interactive segment being hovered, if any.
      */
-    public Optional<InteractiveSegment> render(final PoseStack matrixStack, final int scrollY, final int width, final int height, final int mouseX, final int mouseY) {
+    public Optional<InteractiveSegment> render(final GuiGraphics graphics, final int scrollY, final int width, final int height, final int mouseX, final int mouseY) {
         if (root == null) {
             return Optional.empty();
         }
@@ -182,11 +185,12 @@ public final class DocumentRenderer {
 
         RenderSystem.colorMask(false, false, false, false);
 
-        matrixStack.pushPose();
-        matrixStack.translate(0, 0, 500);
-        Screen.fill(matrixStack, -10, -1000, width + 20, 0, 0xFFFFFFFF);
-        Screen.fill(matrixStack, -10, height, width + 20, height + 1000, 0xFFFFFFFF);
-        matrixStack.popPose();
+        final var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 500);
+        graphics.fill(-10, -1000, width + 20, 0, 0xFFFFFFFF);
+        graphics.fill(-10, height, width + 20, height + 1000, 0xFFFFFFFF);
+        pose.popPose();
 
         RenderSystem.colorMask(true, true, true, true);
 
@@ -234,12 +238,12 @@ public final class DocumentRenderer {
                     lastFirstVisible = info;
                 }
 
-                matrixStack.pushPose();
-                matrixStack.translate(0, globalY, 0);
+                pose.pushPose();
+                pose.translate(0, globalY, 0);
 
-                final Optional<InteractiveSegment> result = segment.render(matrixStack, localX, lineHeight, width, mouseX, mouseY - globalY);
+                final Optional<InteractiveSegment> result = segment.render(graphics, localX, lineHeight, width, mouseX, mouseY - globalY);
 
-                matrixStack.popPose();
+                pose.popPose();
 
                 if (isMouseOverDocument && hovered.isEmpty()) {
                     hovered = result;

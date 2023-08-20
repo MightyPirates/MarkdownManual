@@ -1,6 +1,6 @@
 package li.cil.manual.api.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * This allows implementing custom image renderers.
@@ -17,7 +17,7 @@ public interface ContentRenderer {
      * The width of the area this renderer uses.
      * <p>
      * This is used to offset the OpenGL state properly before calling
-     * {@link #render(PoseStack, int, int)}, to correctly align the image horizontally.
+     * {@link #render(GuiGraphics, int, int)}, to correctly align the image horizontally.
      *
      * @return the width of the rendered image.
      */
@@ -27,7 +27,7 @@ public interface ContentRenderer {
      * The height of the area this renderer uses.
      * <p>
      * This is used to offset the OpenGL state properly before calling
-     * {@link #render(PoseStack, int, int)}, as well as to know where to resume rendering
+     * {@link #render(GuiGraphics, int, int)}, as well as to know where to resume rendering
      * other content below the image.
      *
      * @return the height of the rendered image.
@@ -42,9 +42,9 @@ public interface ContentRenderer {
      * (getWidth,getHeight,*), i.e. translation and scaling are taken care
      * of for you.
      *
-     * @param matrixStack the current matrix stack.
-     * @param mouseX      the X position of the mouse relative to the element.
-     * @param mouseY      the Y position of the mouse relative to the element.
+     * @param graphics the current graphics context.
+     * @param mouseX   the X position of the mouse relative to the element.
+     * @param mouseY   the Y position of the mouse relative to the element.
      */
-    void render(final PoseStack matrixStack, final int mouseX, final int mouseY);
+    void render(final GuiGraphics graphics, final int mouseX, final int mouseY);
 }
