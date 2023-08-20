@@ -99,12 +99,15 @@ To add a dependency to this mod for use in your mod, add the following to your `
 
 ```groovy
 repositories {
-    maven {
-        url 'https://cursemaven.com'
-        content { includeGroup "curse.maven" }
+    exclusiveContent {
+        forRepository { maven("https://cursemaven.com") }
+        filter { includeGroup("curse.maven") }
     }
 }
 dependencies {
-    implementation fg.deobf("curse.maven:markdownmanual-502485:3565800")
+    // Forge via ForgeGradle
+    implementation(fg.deobf("curse.maven:markdownmanual-502485:4713960"))
+    // Fabric via Loom
+    modImplementation("curse.maven:markdownmanual-502485:4713962")
 }
 ```
