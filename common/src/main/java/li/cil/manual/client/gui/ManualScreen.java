@@ -273,7 +273,7 @@ public final class ManualScreen extends Screen {
     }
 
     private int getScrollButtonY() {
-        if (maxScrollPosition() > 0) {
+        if (canScroll()) {
             final int yMax = screenStyle.getScrollBarRect().getHeight() - screenStyle.getScrollButtonRect().getHeight();
             return Math.max(0, Math.min(yMax, yMax * getSmoothScrollPosition() / maxScrollPosition()));
         } else {
@@ -400,7 +400,7 @@ public final class ManualScreen extends Screen {
 
         public void applyTooltip(final boolean fixedY) {
             final var screen = Minecraft.getInstance().screen;
-            if (screen != null) {
+            if (screen != null && canScroll()) {
                 screen.setTooltipForNextRenderPass(getTooltipContent(), getClientTooltipPositioner(fixedY), true);
             }
         }
