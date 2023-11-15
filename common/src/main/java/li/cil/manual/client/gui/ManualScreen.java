@@ -74,7 +74,7 @@ public final class ManualScreen extends Screen {
 
     @Override
     public void render(final GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, partialTicks);
 
         if (!Objects.equals(currentPath, model.peek())) {
             refreshPage();
@@ -124,12 +124,12 @@ public final class ManualScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(final double mouseX, final double mouseY, final double delta) {
-        if (super.mouseScrolled(mouseX, mouseY, delta)) {
+    public boolean mouseScrolled(final double mouseX, final double mouseY, final double deltaX, final double deltaY) {
+        if (super.mouseScrolled(mouseX, mouseY, deltaX, deltaY)) {
             return true;
         }
 
-        scrollBy(delta);
+        scrollBy(deltaY);
         return true;
     }
 
