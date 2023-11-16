@@ -101,6 +101,7 @@ public class Manual implements ManualModel {
         final Registrar<Tab> registry = REGISTRIES.get().get(Constants.TAB_REGISTRY);
         return StreamSupport.stream(registry.spliterator(), false).
             filter(tab -> matches(registry, tab)).
+            sorted().
             collect(Collectors.toList());
     }
 
