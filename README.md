@@ -11,25 +11,29 @@ mod pack **as you please**. I'd be happy to hear about you using it, though, jus
 
 ## Usage
 
-In general, please refer to [the API](src/main/java/li/cil/manual/api), everything you need to know should be explained
+In general, please refer to [the API](common/src/main/java/li/cil/manual/api), everything you need to know should be explained
 in the Javadoc of the API classes and interfaces.
 
 ### Defining a new manual
 
-To define a new manual, create an instance of [`Manual`](src/main/java/li/cil/manual/api/prefab/Manual.java) and
-register it with the `ManualModel` registry. For convenience, the location of this registry is available in
-the [`Constants`](src/main/java/li/cil/manual/api/util/Constants.java) class.
+To define a new manual, create an instance of [`Manual`](common/src/main/java/li/cil/manual/api/prefab/Manual.java) and
+register it with the `manual` registry. For convenience, the location of this registry is available in
+the [`Constants`](common/src/main/java/li/cil/manual/api/util/Constants.java) class.
+
+```java
+final DeferredRegister<ManualModel> MANUALS = DeferredRegister.create("your_mod_id", Constants.MANUAL_REGISTRY);
+final RegistrySupplier<ManualModel> MANUAL = MANUALS.register("your_manual", Manual::new);
+```
 
 To get content into the newly created manual, you'll want to add
-a [`ContentProvider`](src/main/java/li/cil/manual/api/provider/ContentProvider.java). A simple setup just needs to add
-single [`NamespaceContentProvider`](src/main/java/li/cil/manual/api/prefab/provider/NamespaceContentProvider.java) for
+a [`DocumentProvider`](common/src/main/java/li/cil/manual/api/provider/DocumentProvider.java). A simple setup just needs to add
+single [`NamespaceDocumentProvider`](common/src/main/java/li/cil/manual/api/prefab/provider/NamespaceDocumentProvider.java) for
 the current mod, e.g.:
 
 ```java
-final DeferredRegister<ContentProvider> contentProviders =
-    DeferredRegister.create(ContentProvider.class, "your_mod_id");
-    contentProviders.register("name_of_your_content_provider",
-    () -> new NamespaceContentProvider("your_mod_id", "doc"))
+final DeferredRegister<DocumentProvider> DOCUMENT_PROVIDERS = DeferredRegister.create("your_mod_id", Constants.DOCUMENT_PROVIDER_REGISTRY);
+final RegistrySupplier<DocumentProvider> DOCUMENT_PROVIDER = MANUALS.register("your_document_provider", () ->
+    new NamespaceDocumentProvider("your_mod_id", "doc"));
 ```
 
 Where `doc` is a path in your mod's assets, in this case your directory structure would be like this:
@@ -49,8 +53,8 @@ your_mod_dev_dir
 ```
 
 Usually you'll then also want to add an item representing this manual in the game. For a simple setup, subclass
-the [`AbstractManualItem`](src/main/java/li/cil/manual/api/prefab/item/AbstractManualItem.java). This will provide you
-with a default UI, as well. To customize the UI, see below.
+the [`AbstractManualItem`](common/src/main/java/li/cil/manual/api/prefab/item/AbstractManualItem.java) and return the
+`ManualModel` created above in `getManualModel`. This will provide you with a default UI, as well. To customize the UI, see below.
 
 ### Defining content
 The contents of manuals are regular Markdown pages. Manual rendering only supports a basic subset of markdown, including header scaling, italic, bold, monospace and lists.
@@ -69,7 +73,7 @@ Mods may also add additional custom content rendering. For example, you could ad
 ### Extending an existing manual
 
 To extend an existing manual, register providers that match the manual to extend. For example, implement
-a [`ContentProvider`](src/main/java/li/cil/manual/api/provider/ContentProvider.java) and override
+a [`DocumentProvider`](common/src/main/java/li/cil/manual/api/provider/DocumentProvider.java) and override
 the `matches(ManualModel)` method to return true for the manual to add content for. By default, providers will only
 match manuals defined in the same namespace as themselves, i.e., defined by the same mod, as this is usually the desired
 behavior.
@@ -77,20 +81,20 @@ behavior.
 ### Adding tabs
 
 To add additional entry points next to the manual (tabs), follow the same basic procedure as when extending a manual
-with any other provider. Simply register a new [`Tab`](src/main/java/li/cil/manual/api/Tab.java) implementation with the
+with any other provider. Simply register a new [`Tab`](common/src/main/java/li/cil/manual/api/Tab.java) implementation with the
 tab registry.
 
 ### Changing the manual UI
 
 When using the `AbstractManualItem` or using the `ShowManualScreenEvent` the built-in manual screen implementation is
 used. This implementation can be styled using implementations of
-the [`ManualStyle`](src/main/java/li/cil/manual/api/ManualStyle.java)
-and [`ManualScreenStyle`](src/main/java/li/cil/manual/api/ManualScreenStyle.java) interfaces. These allow changing
+the [`ManualStyle`](common/src/main/java/li/cil/manual/api/ManualStyle.java)
+and [`ManualScreenStyle`](common/src/main/java/li/cil/manual/api/ManualScreenStyle.java) interfaces. These allow changing
 textures used in the screen (background, tab, scroll bar) as well as changing content rendering parameters such as
 fonts, text color and so on.
 
 To use a completely customized manual screen, you'll want to override `AbstractManualItem.showManualScreen()` or use a
-custom item. In this case you'll need to query content from the `ManualModel` and use the [`Document`](src/main/java/li/cil/manual/client/document/Document.java)
+custom item. In this case you'll need to query content from the `ManualModel` and use the [`Document`](common/src/main/java/li/cil/manual/api/content/Document.java)
 class directly. See the implementation of the default `ManualScreen` for details on its usage.
 
 ### Gradle
