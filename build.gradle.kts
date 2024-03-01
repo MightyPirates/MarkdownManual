@@ -125,6 +125,16 @@ for (platform in enabledPlatforms.split(',')) {
             jar {
                 archiveClassifier.set("dev")
             }
+
+            val sourcesJar by creating(Jar::class) {
+                archiveClassifier.set("sources")
+                exclude("architectury.common.json")
+                from(sourceSets.main.get().allSource, project(":common").sourceSets.main.get().allSource)
+            }
+        }
+
+        java {
+            withSourcesJar()
         }
 
         (components["java"] as AdhocComponentWithVariants)
