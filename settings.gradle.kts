@@ -23,6 +23,7 @@ pluginManagement {
 include("common")
 include("fabric")
 include("forge")
+include("neoforge")
 
 val modId: String by settings
 rootProject.name = modId

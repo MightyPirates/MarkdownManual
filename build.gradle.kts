@@ -95,16 +95,17 @@ for (platform in enabledPlatforms.split(',')) {
 
         val common: Configuration by configurations.creating
         val shadowCommon: Configuration by configurations.creating
+        val projectTaskName: String = platform.replace("neoforge", "neoForge").capitalized()
 
         configurations {
             compileClasspath.get().extendsFrom(common)
             runtimeClasspath.get().extendsFrom(common)
-            getByName("development${platform.capitalized()}").extendsFrom(common)
+            getByName("development${projectTaskName}").extendsFrom(common)
         }
 
         dependencies {
             common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
-            shadowCommon(project(path = ":common", configuration = "transformProduction${platform.capitalized()}")) { isTransitive = false }
+            shadowCommon(project(path = ":common", configuration = "transformProduction${projectTaskName}")) { isTransitive = false }
         }
 
         tasks {

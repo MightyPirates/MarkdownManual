@@ -1,0 +1,40 @@
+modLoader = "javafml"
+loaderVersion = "[${loaderVersion},)"
+issueTrackerURL = "https://github.com/MightyPirates/MarkdownManual/issues"
+license = "MIT"
+
+[[mods]]
+modId = "markdown_manual"
+version = "${version}"
+displayName = "Markdown Manual"
+authors = "Sangar"
+description = '''
+Library mod providing a convenient way of defining in-game manuals.
+'''
+
+[[dependencies.markdown_manual]]
+modId = "neoforge"
+type="required"
+versionRange = "[${neoforgeVersion},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.markdown_manual]]
+modId = "minecraft"
+type="required"
+versionRange = "[${minecraftVersion},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.markdown_manual]]
+modId = "architectury"
+type="required"
+versionRange = "[${architecturyVersion},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[mc-publish]
+modrinth = "nPQ9xkPg"
+curseforge = 502485
+dependencies = [
+    "architectury@>=${architecturyVersion}(required){modrinth:lhGA9TYQ}{curseforge:419699}"
+]
