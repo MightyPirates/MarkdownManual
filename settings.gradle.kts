@@ -1,12 +1,6 @@
 pluginManagement {
     repositories {
-        exclusiveContent {
-            forRepository { maven("https://maven.architectury.dev") }
-            filter {
-                includeGroup("architectury-plugin")
-                includeGroupByRegex("dev\\.architectury.*")
-            }
-        }
+        maven("https://maven.architectury.dev")
         exclusiveContent {
             forRepository { maven("https://maven.fabricmc.net") }
             filter {
@@ -21,6 +15,7 @@ pluginManagement {
                 includeGroup("de.oceanlabs.mcp")
             }
         }
+        maven("https://maven.neoforged.net/releases/")
         gradlePluginPortal()
     }
 }
