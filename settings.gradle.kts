@@ -1,12 +1,6 @@
 pluginManagement {
     repositories {
-        exclusiveContent {
-            forRepository { maven("https://maven.architectury.dev") }
-            filter {
-                includeGroup("architectury-plugin")
-                includeGroupByRegex("dev\\.architectury.*")
-            }
-        }
+        maven("https://maven.architectury.dev")
         exclusiveContent {
             forRepository { maven("https://maven.fabricmc.net") }
             filter {
@@ -21,6 +15,7 @@ pluginManagement {
                 includeGroup("de.oceanlabs.mcp")
             }
         }
+        maven("https://maven.neoforged.net/releases/")
         gradlePluginPortal()
     }
 }
@@ -28,6 +23,7 @@ pluginManagement {
 include("common")
 include("fabric")
 include("forge")
+include("neoforge")
 
 val modId: String by settings
 rootProject.name = modId
