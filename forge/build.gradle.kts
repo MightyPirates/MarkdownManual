@@ -5,11 +5,6 @@ val architecturyVersion: String = libs.versions.architectury.get()
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
-
-    forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-    }
 }
 
 dependencies {
@@ -30,5 +25,9 @@ tasks {
         filesMatching("META-INF/mods.toml") {
             expand(properties)
         }
+    }
+
+    remapJar {
+        atAccessWideners.add("${modId}.accesswidener")
     }
 }

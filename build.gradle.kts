@@ -62,6 +62,11 @@ subprojects {
         "compileOnly"("com.google.code.findbugs:jsr305:3.0.2")
     }
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
     tasks {
         jar {
             from("LICENSE") {
@@ -84,6 +89,12 @@ subprojects {
     }
 }
 
+val projectConfigurations = mapOf(
+    "fabric" to "Fabric",
+    "forge" to "Forge",
+    "neoforge" to "NeoForge"
+)
+
 for (platform in enabledPlatforms.split(',')) {
     project(":$platform") {
         apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
@@ -94,23 +105,34 @@ for (platform in enabledPlatforms.split(',')) {
         }
 
         val common: Configuration by configurations.creating
-        val shadowCommon: Configuration by configurations.creating
+        val shadowBundle: Configuration by configurations.creating
 
         configurations {
+            common.isCanBeResolved = true
+            common.isCanBeConsumed = false
+
             compileClasspath.get().extendsFrom(common)
             runtimeClasspath.get().extendsFrom(common)
-            getByName("development${platform.capitalized()}").extendsFrom(common)
+            getByName("development${projectConfigurations[platform]}").extendsFrom(common)
+
+            shadowBundle.isCanBeResolved = true
+            shadowBundle.isCanBeConsumed = false
         }
 
         dependencies {
             common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
-            shadowCommon(project(path = ":common", configuration = "transformProduction${platform.capitalized()}")) { isTransitive = false }
+            shadowBundle(
+                project(
+                    path = ":common",
+                    configuration = "transformProduction${projectConfigurations[platform]}"
+                )
+            ) { isTransitive = false }
         }
 
         tasks {
             withType<ShadowJar> {
                 exclude("architectury.common.json")
-                configurations = listOf(shadowCommon)
+                configurations = listOf(shadowBundle)
                 archiveClassifier.set("dev-shadow")
             }
 

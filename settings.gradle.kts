@@ -5,6 +5,7 @@ pluginManagement {
             filter {
                 includeGroup("architectury-plugin")
                 includeGroupByRegex("dev\\.architectury.*")
+                includeGroup("com.mojang")
             }
         }
         exclusiveContent {
