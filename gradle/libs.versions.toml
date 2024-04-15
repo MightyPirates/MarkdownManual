@@ -28,3 +28,6 @@ fabric-architectury = { group = "dev.architectury", name = "architectury-fabric"
 
 forge-platform = { group = "net.minecraftforge", name = "forge", version.ref = "forge-platform" }
 forge-architectury = { group = "dev.architectury", name = "architectury-forge", version.ref = "architectury" }
+
+neoforge-platform = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge-platform" }
+neoforge-architectury = { group = "dev.architectury", name = "architectury-neoforge", version.ref = "architectury" }
