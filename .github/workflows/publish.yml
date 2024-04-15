@@ -88,9 +88,7 @@ jobs:
           version: MC${{ needs.build.outputs.mc_version }}-${{ matrix.loader }}-${{ needs.build.outputs.mod_version }}
           java: Java 17
 
-          files: |
-            common/build/libs/*-api.jar
-            ${{ matrix.loader }}/build/libs/*.jar
+          files: ${{ matrix.loader }}/build/libs/*.jar
 
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
