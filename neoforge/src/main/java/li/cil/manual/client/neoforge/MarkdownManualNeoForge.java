@@ -4,13 +4,10 @@ import li.cil.manual.api.util.Constants;
 import li.cil.manual.client.ClientSetup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLEnvironment;
 
-@Mod(Constants.MOD_ID)
+@Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public final class MarkdownManualNeoForge {
     public MarkdownManualNeoForge() {
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            ClientSetup.initialize();
-        }
+        ClientSetup.initialize();
     }
 }

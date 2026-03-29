@@ -81,15 +81,15 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
         final boolean isHovered = mouseX >= x && mouseX <= x + width &&
             mouseY >= y && mouseY <= y + height;
         if (isHovered) {
-            DocumentRenderTypes.draw(DocumentRenderTypes.highlight(), (buffer) -> {
+            DocumentRenderTypes.draw(graphics, DocumentRenderTypes.highlight(), (buffer) -> {
                 final var matrix = pose.last().pose();
 
                 final float r = 0.2f, g = 0.4f, b = 0.6f, a = 0.25f;
 
-                buffer.vertex(matrix, 0, renderer.getHeight(), 0).color(r, g, b, a).endVertex();
-                buffer.vertex(matrix, renderer.getWidth(), renderer.getHeight(), 0).color(r, g, b, a).endVertex();
-                buffer.vertex(matrix, renderer.getWidth(), 0, 0).color(r, g, b, a).endVertex();
-                buffer.vertex(matrix, 0, 0, 0).color(r, g, b, a).endVertex();
+                buffer.addVertex(matrix, 0, renderer.getHeight(), 0).setColor(r, g, b, a);
+                buffer.addVertex(matrix, renderer.getWidth(), renderer.getHeight(), 0).setColor(r, g, b, a);
+                buffer.addVertex(matrix, renderer.getWidth(), 0, 0).setColor(r, g, b, a);
+                buffer.addVertex(matrix, 0, 0, 0).setColor(r, g, b, a);
             });
         }
 

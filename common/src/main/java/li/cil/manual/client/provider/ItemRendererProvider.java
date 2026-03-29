@@ -29,7 +29,7 @@ public final class ItemRendererProvider extends AbstractRendererProvider {
 
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
-        final Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(data));
+        final Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(data));
         if (item != Items.AIR) {
             return Optional.of(new ItemStackContentRenderer(new ItemStack(item)));
         } else {

@@ -49,12 +49,12 @@ public class TextureContentRenderer implements ContentRenderer {
 
     @Override
     public void render(final GuiGraphics graphics, final int mouseX, final int mouseY) {
-        DocumentRenderTypes.draw(DocumentRenderTypes.texture(location), (buffer) -> {
+        DocumentRenderTypes.draw(graphics, DocumentRenderTypes.texture(location), (buffer) -> {
             final var matrix = graphics.pose().last().pose();
-            buffer.vertex(matrix, 0, texture.height, 0).uv(0, 1).endVertex();
-            buffer.vertex(matrix, texture.width, texture.height, 0).uv(1, 1).endVertex();
-            buffer.vertex(matrix, texture.width, 0, 0).uv(1, 0).endVertex();
-            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).endVertex();
+            buffer.addVertex(matrix, 0, texture.height, 0).setUv(0, 1);
+            buffer.addVertex(matrix, texture.width, texture.height, 0).setUv(1, 1);
+            buffer.addVertex(matrix, texture.width, 0, 0).setUv(1, 0);
+            buffer.addVertex(matrix, 0, 0, 0).setUv(0, 0);
         });
     }
 

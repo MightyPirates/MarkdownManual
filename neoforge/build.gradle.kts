@@ -4,10 +4,6 @@ val neoforgeVersion: String = libs.versions.neoforge.platform.get()
 val neoforgeLoaderVersion: String = libs.versions.neoforge.loader.get()
 val architecturyVersion: String = libs.versions.architectury.get()
 
-loom {
-    accessWidenerPath.set(project(":common").loom.accessWidenerPath)
-}
-
 repositories {
     maven("https://maven.neoforged.net/releases")
 }
@@ -27,7 +23,7 @@ tasks {
             "architecturyVersion" to architecturyVersion
         )
         inputs.properties(properties)
-        filesMatching("META-INF/mods.toml") {
+        filesMatching("META-INF/neoforge.mods.toml") {
             expand(properties)
         }
     }

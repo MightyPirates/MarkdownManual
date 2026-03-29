@@ -27,7 +27,7 @@ public final class TagRendererProvider extends AbstractRendererProvider {
 
     @Override
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
-        final ResourceLocation location = new ResourceLocation(data);
+        final ResourceLocation location = ResourceLocation.parse(data);
         return BuiltInRegistries.ITEM.getTagNames()
             .filter(key -> key.location().equals(location))
             .findFirst()
