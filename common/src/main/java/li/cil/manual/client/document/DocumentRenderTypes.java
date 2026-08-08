@@ -2,6 +2,7 @@ package li.cil.manual.client.document;
 
 import com.mojang.blaze3d.vertex.*;
 import li.cil.manual.api.util.Constants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -36,9 +37,8 @@ public final class DocumentRenderTypes extends RenderType {
                 .createCompositeState(false));
     }
 
-    public static void draw(final RenderType renderType, final Consumer<VertexConsumer> callback) {
-        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        final MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(builder);
+    public static void draw(final GuiGraphics graphics, final RenderType renderType, final Consumer<VertexConsumer> callback) {
+        final MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
         final VertexConsumer buffer = bufferSource.getBuffer(renderType);
 
         callback.accept(buffer);

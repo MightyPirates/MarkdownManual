@@ -153,22 +153,18 @@ public abstract class BitmapFontRenderer implements FontRenderer {
         final float u = column * U_STEP;
         final float v = row * V_STEP;
 
-        buffer.vertex(matrix, x, lineHeight(), 0)
-            .color(r, g, b, a)
-            .uv(u, v + V_SIZE)
-            .endVertex();
-        buffer.vertex(matrix, x + charWidth(), lineHeight(), 0)
-            .color(r, g, b, a)
-            .uv(u + U_SIZE, v + V_SIZE)
-            .endVertex();
-        buffer.vertex(matrix, x + charWidth(), 0, 0)
-            .color(r, g, b, a)
-            .uv(u + U_SIZE, v)
-            .endVertex();
-        buffer.vertex(matrix, x, 0, 0)
-            .color(r, g, b, a)
-            .uv(u, v)
-            .endVertex();
+        buffer.addVertex(matrix, x, lineHeight(), 0)
+            .setColor(r, g, b, a)
+            .setUv(u, v + V_SIZE);
+        buffer.addVertex(matrix, x + charWidth(), lineHeight(), 0)
+            .setColor(r, g, b, a)
+            .setUv(u + U_SIZE, v + V_SIZE);
+        buffer.addVertex(matrix, x + charWidth(), 0, 0)
+            .setColor(r, g, b, a)
+            .setUv(u + U_SIZE, v);
+        buffer.addVertex(matrix, x, 0, 0)
+            .setColor(r, g, b, a)
+            .setUv(u, v);
     }
 
     private int getCharIndex(final char ch) {
@@ -187,11 +183,11 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     private static final class FontRenderTypes extends RenderType {
         public static RenderType create(final ResourceLocation texture) {
             return create(Constants.MOD_ID + "/bitmap_font",
-                DefaultVertexFormat.POSITION_COLOR_TEX,
+                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
                 VertexFormat.Mode.QUADS, 256,
                 false, false,
                 CompositeState.builder()
-                    .setShaderState(POSITION_COLOR_TEX_SHADER)
+                    .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setTextureState(new TextureStateShard(texture, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setWriteMaskState(COLOR_WRITE)

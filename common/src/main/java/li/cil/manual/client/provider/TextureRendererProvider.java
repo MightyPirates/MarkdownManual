@@ -31,7 +31,7 @@ public final class TextureRendererProvider implements RendererProvider {
         }
 
         try {
-            return Optional.of(new TextureContentRenderer(new ResourceLocation(path)));
+            return Optional.of(new TextureContentRenderer(ResourceLocation.parse(path)));
         } catch (final Throwable t) {
             return Optional.of(new MissingContentRenderer(Strings.NO_SUCH_IMAGE));
         }

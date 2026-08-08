@@ -1,7 +1,5 @@
 package li.cil.manual.client.document.segment;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.client.gui.GuiGraphics;
@@ -80,8 +78,7 @@ public class TextSegment extends AbstractSegment {
         final Optional<InteractiveSegment> interactive = getInteractiveParent();
         final ObjectReference<Optional<InteractiveSegment>> hovered = new ObjectReference<>(Optional.empty());
 
-        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        final MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(builder);
+        final MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
 
         forEachBlock(segmentX, lineHeight, documentWidth, block -> {
             final int blockWidth = getStringWidth(block.chars);

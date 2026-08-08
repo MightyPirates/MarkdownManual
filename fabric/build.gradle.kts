@@ -26,8 +26,4 @@ tasks {
             expand(properties)
         }
     }
-
-    remapJar {
-        injectAccessWidener.set(true)
-    }
 }

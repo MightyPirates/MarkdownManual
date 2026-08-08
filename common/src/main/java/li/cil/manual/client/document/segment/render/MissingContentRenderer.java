@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public final class MissingContentRenderer extends TextureContentRenderer implements InteractiveContentRenderer {
-    private static final ResourceLocation LOCATION_GUI_MANUAL_MISSING = new ResourceLocation(Constants.MOD_ID, "textures/gui/missing.png");
+    private static final ResourceLocation LOCATION_GUI_MANUAL_MISSING = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/missing.png");
 
     private final Component tooltip;
 

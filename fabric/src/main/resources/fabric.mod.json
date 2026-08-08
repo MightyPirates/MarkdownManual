@@ -21,7 +21,7 @@
         "fabric-api": ">=${fabricApiVersion}",
         "architectury": ">=${architecturyVersion}",
         "minecraft": ">=${minecraftVersion}",
-        "java": ">=17"
+        "java": ">=21"
     },
     "custom": {
         "mc-publish": {

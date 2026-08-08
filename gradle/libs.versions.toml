@@ -1,22 +1,20 @@
 [versions]
-minecraft = "1.20.4"
-parchment-minecraft = "1.20.4"
-parchment-mappings = "2024.02.25"
+minecraft = "1.21.1"
+parchment-minecraft = "1.21.1"
+parchment-mappings = "2024.11.17"
 
-architectury = "11.1.17"
+architectury = "13.0.8"
 
-fabric-loader = "0.15.10"
-fabric-api = "0.97.0+1.20.4"
+fabric-loader = "0.18.5"
+fabric-api = "0.116.9+1.21.1"
 
-forge-platform = "1.20.4-49.0.41"
-
-neoforge-platform = "20.4.227"
+neoforge-platform = "21.1.222"
 neoforge-loader = "2"
 
 [plugins]
-loom = { id = "dev.architectury.loom", version = "1.6-SNAPSHOT" }
+loom = { id = "dev.architectury.loom", version = "1.11-SNAPSHOT" }
 architectury = { id = "architectury-plugin", version = "3.4-SNAPSHOT" }
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "com.gradleup.shadow", version = "9.4.1" }
 spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
 
 [libraries]
@@ -26,9 +24,6 @@ architectury-api = { group = "dev.architectury", name = "architectury", version.
 fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fabric-loader" }
 fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fabric-api" }
 fabric-architectury = { group = "dev.architectury", name = "architectury-fabric", version.ref = "architectury" }
-
-forge-platform = { group = "net.minecraftforge", name = "forge", version.ref = "forge-platform" }
-forge-architectury = { group = "dev.architectury", name = "architectury-forge", version.ref = "architectury" }
 
 neoforge-platform = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge-platform" }
 neoforge-architectury = { group = "dev.architectury", name = "architectury-neoforge", version.ref = "architectury" }
