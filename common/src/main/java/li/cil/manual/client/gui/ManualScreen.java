@@ -74,7 +74,7 @@ public final class ManualScreen extends Screen {
 
     @Override
     public void render(final GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
-        renderBackground(graphics, mouseX, mouseY, partialTicks);
+        renderTransparentBackground(graphics);
 
         if (!Objects.equals(currentPath, model.peek())) {
             refreshPage();
