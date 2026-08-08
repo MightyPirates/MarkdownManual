@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.api.util.Constants;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,8 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     private final float V_SIZE = lineHeight() / (float) getResolution();
     private final float U_STEP = (charWidth() + getGapU()) / (float) getResolution();
     private final float V_STEP = (lineHeight() + getGapV()) / (float) getResolution();
+
+    private static final int FULL_BRIGHT = LightTexture.pack(0xF, 0xF);
 
     private RenderType renderLayer;
 
@@ -155,16 +158,20 @@ public abstract class BitmapFontRenderer implements FontRenderer {
 
         buffer.addVertex(matrix, x, lineHeight(), 0)
             .setColor(r, g, b, a)
-            .setUv(u, v + V_SIZE);
+            .setUv(u, v + V_SIZE)
+            .setLight(FULL_BRIGHT);
         buffer.addVertex(matrix, x + charWidth(), lineHeight(), 0)
             .setColor(r, g, b, a)
-            .setUv(u + U_SIZE, v + V_SIZE);
+            .setUv(u + U_SIZE, v + V_SIZE)
+            .setLight(FULL_BRIGHT);
         buffer.addVertex(matrix, x + charWidth(), 0, 0)
             .setColor(r, g, b, a)
-            .setUv(u + U_SIZE, v);
+            .setUv(u + U_SIZE, v)
+            .setLight(FULL_BRIGHT);
         buffer.addVertex(matrix, x, 0, 0)
             .setColor(r, g, b, a)
-            .setUv(u, v);
+            .setUv(u, v)
+            .setLight(FULL_BRIGHT);
     }
 
     private int getCharIndex(final char ch) {
@@ -190,6 +197,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
                     .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setTextureState(new TextureStateShard(texture, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setLightmapState(LIGHTMAP)
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
         }
