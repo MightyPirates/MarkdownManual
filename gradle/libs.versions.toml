@@ -3,12 +3,12 @@ minecraft = "1.21.1"
 parchment-minecraft = "1.21.1"
 parchment-mappings = "2024.11.17"
 
-architectury = "13.0.8"
+architectury = "13.0.11"
 
-fabric-loader = "0.18.5"
-fabric-api = "0.116.9+1.21.1"
+fabric-loader = "0.19.3"
+fabric-api = "0.116.15+1.21.1"
 
-neoforge-platform = "21.1.222"
+neoforge-platform = "21.1.248"
 neoforge-loader = "2"
 
 [plugins]
