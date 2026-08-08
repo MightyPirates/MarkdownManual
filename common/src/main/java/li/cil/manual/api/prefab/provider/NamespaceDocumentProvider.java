@@ -1,15 +1,15 @@
 package li.cil.manual.api.prefab.provider;
 
-import com.google.common.base.Charsets;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.api.provider.DocumentProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -37,10 +37,10 @@ public class NamespaceDocumentProvider implements DocumentProvider {
     @Override
     public Optional<Document> getDocument(final String path, final String language) {
         final ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        final ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, basePath + path);
+        final Identifier location = Identifier.fromNamespaceAndPath(namespace, basePath + path);
         return resourceManager.getResource(location).flatMap(resource -> {
             try (InputStream stream = resource.open()) {
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
                 final ArrayList<String> lines = new ArrayList<>();
                 String line;
                 while ((line = reader.readLine()) != null) {

@@ -211,7 +211,7 @@ public class Manual implements ManualModel {
             case PASS -> {
                 final Optional<ResourceKey<T>> entryId = registry.getKey(entry);
                 final Optional<ResourceKey<ManualModel>> manualId = REGISTRIES.get().get(Constants.MANUAL_REGISTRY).getKey(this);
-                yield entryId.isPresent() && manualId.isPresent() && Objects.equals(entryId.get().location().getNamespace(), manualId.get().location().getNamespace());
+                yield entryId.isPresent() && manualId.isPresent() && Objects.equals(entryId.get().identifier().getNamespace(), manualId.get().identifier().getNamespace());
             }
             case MATCH -> true;
             case MISMATCH -> false;

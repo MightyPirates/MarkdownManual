@@ -6,8 +6,8 @@ import li.cil.manual.api.provider.DocumentProvider;
 import li.cil.manual.api.provider.PathProvider;
 import li.cil.manual.api.provider.RendererProvider;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
     public static final String MOD_ID = "markdown_manual";
@@ -23,7 +23,7 @@ public final class Constants {
     // ----------------------------------------------------------------------- //
 
     private static <T> ResourceKey<Registry<T>> key(final String name) {
-        return ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID, name));
+        return ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MOD_ID, name));
     }
 
     // ----------------------------------------------------------------------- //

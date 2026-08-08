@@ -42,11 +42,11 @@ public final class ItemStackContentRenderer implements ContentRenderer {
 
         final var pose = graphics.pose();
 
-        pose.pushPose();
-        pose.scale(scaleX, scaleY, 1);
+        pose.pushMatrix();
+        pose.scale(scaleX, scaleY);
 
         graphics.renderFakeItem(stack, 0, 0);
 
-        pose.popPose();
+        pose.popMatrix();
     }
 }

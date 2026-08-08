@@ -3,7 +3,6 @@ package li.cil.manual.client.document.segment;
 import li.cil.manual.api.render.FontRenderer;
 import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
@@ -78,8 +77,6 @@ public class TextSegment extends AbstractSegment {
         final Optional<InteractiveSegment> interactive = getInteractiveParent();
         final ObjectReference<Optional<InteractiveSegment>> hovered = new ObjectReference<>(Optional.empty());
 
-        final MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
-
         forEachBlock(segmentX, lineHeight, documentWidth, block -> {
             final int blockWidth = getStringWidth(block.chars);
             final int blockHeight = getLineHeight();
@@ -90,16 +87,14 @@ public class TextSegment extends AbstractSegment {
             }
 
             final var pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(block.x, block.y, 0);
-            pose.scale(scale, scale, scale);
+            pose.pushMatrix();
+            pose.translate(block.x, block.y);
+            pose.scale(scale, scale);
 
-            getFont().drawInBatch(format + block.chars, color, graphics.pose().last().pose(), bufferSource);
+            getFont().draw(graphics, format + block.chars, color);
 
-            pose.popPose();
+            pose.popMatrix();
         });
-
-        bufferSource.endBatch();
 
         return hovered.value;
     }

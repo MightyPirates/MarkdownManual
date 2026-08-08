@@ -1,15 +1,15 @@
 package li.cil.manual.api.content;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public final class Document {
     private final List<String> lines;
-    @Nullable private final ResourceLocation location;
+    @Nullable private final Identifier location;
 
-    public Document(final List<String> lines, @Nullable final ResourceLocation location) {
+    public Document(final List<String> lines, @Nullable final Identifier location) {
         this.location = location;
         this.lines = lines;
     }
@@ -23,7 +23,7 @@ public final class Document {
     }
 
     @Nullable
-    public ResourceLocation getLocation() {
+    public Identifier getLocation() {
         return location;
     }
 }

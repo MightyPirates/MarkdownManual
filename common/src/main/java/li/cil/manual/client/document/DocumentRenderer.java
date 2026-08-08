@@ -1,14 +1,12 @@
 package li.cil.manual.client.document;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import li.cil.manual.api.ManualModel;
 import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.content.Document;
 import li.cil.manual.client.document.segment.*;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public final class DocumentRenderer {
     private final ManualModel model;
     private final ManualStyle style;
     @Nullable
-    private ResourceLocation location;
+    private Identifier location;
     @Nullable
     private Segment root;
     @Nullable
@@ -68,7 +66,7 @@ public final class DocumentRenderer {
     }
 
     @Nullable
-    public ResourceLocation getLocation() {
+    public Identifier getLocation() {
         return location;
     }
 
@@ -180,19 +178,12 @@ public final class DocumentRenderer {
             return Optional.empty();
         }
 
-        // Clear depth mask, then create masks in foreground above and below scroll area.
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
-
-        RenderSystem.colorMask(false, false, false, false);
+        // Clip segments to the visible scroll area. Note that this is in local space:
+        // the pose is expected to be translated to the top left of the document area,
+        // and enableScissor transforms the rectangle by the current pose.
+        graphics.enableScissor(0, 0, width, height);
 
         final var pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 500);
-        graphics.fill(-10, -1000, width + 20, 0, 0xFFFFFFFF);
-        graphics.fill(-10, height, width + 20, height + 1000, 0xFFFFFFFF);
-        pose.popPose();
-
-        RenderSystem.colorMask(true, true, true, true);
 
         // Actual rendering.
         final boolean isMouseOverDocument = mouseX >= 0 || mouseX <= width || mouseY >= 0 || mouseY <= height;
@@ -238,12 +229,12 @@ public final class DocumentRenderer {
                     lastFirstVisible = info;
                 }
 
-                pose.pushPose();
-                pose.translate(0, globalY, 0);
+                pose.pushMatrix();
+                pose.translate(0, globalY);
 
                 final Optional<InteractiveSegment> result = segment.render(graphics, localX, lineHeight, width, mouseX, mouseY - globalY);
 
-                pose.popPose();
+                pose.popMatrix();
 
                 if (isMouseOverDocument && hovered.isEmpty()) {
                     hovered = result;
@@ -265,7 +256,7 @@ public final class DocumentRenderer {
 
         setHoveredSegment(hovered.orElse(null));
 
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
+        graphics.disableScissor();
 
         return hovered;
     }

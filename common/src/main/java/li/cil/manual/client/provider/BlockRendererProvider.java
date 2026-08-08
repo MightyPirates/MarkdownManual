@@ -44,7 +44,7 @@ public final class BlockRendererProvider extends AbstractRendererProvider {
     protected Optional<ContentRenderer> doGetRenderer(final String data) {
         final BlockState state = Objects.requireNonNull(BLOCK_STATE_CACHE.computeIfAbsent(data, (string) -> {
             try {
-                return BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(string), false).blockState();
+                return BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, new StringReader(string), false).blockState();
             } catch (final CommandSyntaxException e) {
                 LOGGER.error("Failed parsing block state.", e);
                 return Blocks.AIR.defaultBlockState();

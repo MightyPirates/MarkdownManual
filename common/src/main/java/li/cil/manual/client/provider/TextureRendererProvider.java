@@ -7,7 +7,7 @@ import li.cil.manual.api.util.MatchResult;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
 import li.cil.manual.client.document.segment.render.TextureContentRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public final class TextureRendererProvider implements RendererProvider {
         }
 
         try {
-            return Optional.of(new TextureContentRenderer(ResourceLocation.parse(path)));
+            return Optional.of(new TextureContentRenderer(Identifier.parse(path)));
         } catch (final Throwable t) {
             return Optional.of(new MissingContentRenderer(Strings.NO_SUCH_IMAGE));
         }

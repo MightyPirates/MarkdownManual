@@ -6,10 +6,8 @@ import li.cil.manual.api.ManualStyle;
 import li.cil.manual.api.util.ShowManualScreenEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -33,15 +31,15 @@ public abstract class AbstractManualItem extends Item {
         if (world.isClientSide()) {
             openManualFor(context, world);
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level world, final Player player, final InteractionHand hand) {
+    public InteractionResult use(final Level world, final Player player, final InteractionHand hand) {
         if (world.isClientSide()) {
             openManual(player);
         }
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     // --------------------------------------------------------------------- //

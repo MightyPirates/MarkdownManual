@@ -2,8 +2,8 @@ package li.cil.manual.client.document.segment;
 
 import li.cil.manual.client.document.DocumentRenderer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 
 import java.util.Optional;
 

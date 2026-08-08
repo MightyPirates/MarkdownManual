@@ -2,7 +2,7 @@ package li.cil.manual.api;
 
 import li.cil.manual.api.util.Constants;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Style definition that may be used when using the built-in manual
@@ -15,16 +15,16 @@ public interface ManualScreenStyle {
     ManualScreenStyle DEFAULT = new ManualScreenStyle() {
     };
 
-    default ResourceLocation getWindowBackground() {
-        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/manual.png");
+    default Identifier getWindowBackground() {
+        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/manual.png");
     }
 
-    default ResourceLocation getScrollButtonTexture() {
-        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/scroll_button.png");
+    default Identifier getScrollButtonTexture() {
+        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/scroll_button.png");
     }
 
-    default ResourceLocation getTabButtonTexture() {
-        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/tab_button.png");
+    default Identifier getTabButtonTexture() {
+        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/tab_button.png");
     }
 
     default Rect2i getWindowRect() {

@@ -10,7 +10,10 @@ import org.joml.Matrix4f;
  */
 public interface FontRenderer {
     /**
-     * Render up to the specified amount of characters of the specified string.
+     * Render a string into the specified buffer, for use in world rendering.
+     * <p>
+     * GUI rendering no longer goes through a {@link MultiBufferSource}; use
+     * {@link #draw(GuiGraphics, CharSequence, int)} there instead.
      *
      * @param value  the string to render.
      * @param argb   the color to render the string with.
@@ -20,17 +23,13 @@ public interface FontRenderer {
     void drawInBatch(final CharSequence value, final int argb, final Matrix4f matrix, final MultiBufferSource buffer);
 
     /**
-     * Draws a string in immediate mode.
+     * Draws a string at the origin of the current transform of the specified graphics context.
      *
      * @param graphics the current graphics context.
      * @param value    the string to render.
      * @param argb     the color to render the string with.
      */
-    default void draw(final GuiGraphics graphics, final CharSequence value, final int argb) {
-        final MultiBufferSource.BufferSource buffer = graphics.bufferSource();
-        drawInBatch(value, argb, graphics.pose().last().pose(), buffer);
-        buffer.endBatch();
-    }
+    void draw(final GuiGraphics graphics, final CharSequence value, final int argb);
 
     /**
      * Computes the rendered width of the provided character sequence.

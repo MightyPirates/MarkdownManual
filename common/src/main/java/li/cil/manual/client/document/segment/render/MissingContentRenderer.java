@@ -3,10 +3,10 @@ package li.cil.manual.client.document.segment.render;
 import li.cil.manual.api.render.InteractiveContentRenderer;
 import li.cil.manual.api.util.Constants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class MissingContentRenderer extends TextureContentRenderer implements InteractiveContentRenderer {
-    private static final ResourceLocation LOCATION_GUI_MANUAL_MISSING = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/missing.png");
+    private static final Identifier LOCATION_GUI_MANUAL_MISSING = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/missing.png");
 
     private final Component tooltip;
 

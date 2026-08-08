@@ -3,7 +3,6 @@ package li.cil.manual.client.document.segment;
 import li.cil.manual.api.render.ContentRenderer;
 import li.cil.manual.api.render.InteractiveContentRenderer;
 import li.cil.manual.api.util.PathUtils;
-import li.cil.manual.client.document.DocumentRenderTypes;
 import li.cil.manual.client.document.DocumentRenderer;
 import li.cil.manual.client.document.Strings;
 import li.cil.manual.client.document.segment.render.MissingContentRenderer;
@@ -14,6 +13,10 @@ import net.minecraft.util.Mth;
 import java.util.Optional;
 
 public final class RenderSegment extends AbstractSegment implements InteractiveSegment {
+    private static final int HIGHLIGHT_COLOR = 0x40336699;
+
+    // --------------------------------------------------------------------- //
+
     private final Component title;
     private final ContentRenderer renderer;
 
@@ -74,28 +77,19 @@ public final class RenderSegment extends AbstractSegment implements InteractiveS
         final float scale = scale(segmentX, documentWidth);
 
         final var pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(x, y, 0);
-        pose.scale(scale, scale, scale);
+        pose.pushMatrix();
+        pose.translate(x, y);
+        pose.scale(scale, scale);
 
         final boolean isHovered = mouseX >= x && mouseX <= x + width &&
             mouseY >= y && mouseY <= y + height;
         if (isHovered) {
-            DocumentRenderTypes.draw(graphics, DocumentRenderTypes.highlight(), (buffer) -> {
-                final var matrix = pose.last().pose();
-
-                final float r = 0.2f, g = 0.4f, b = 0.6f, a = 0.25f;
-
-                buffer.addVertex(matrix, 0, renderer.getHeight(), 0).setColor(r, g, b, a);
-                buffer.addVertex(matrix, renderer.getWidth(), renderer.getHeight(), 0).setColor(r, g, b, a);
-                buffer.addVertex(matrix, renderer.getWidth(), 0, 0).setColor(r, g, b, a);
-                buffer.addVertex(matrix, 0, 0, 0).setColor(r, g, b, a);
-            });
+            graphics.fill(0, 0, renderer.getWidth(), renderer.getHeight(), HIGHLIGHT_COLOR);
         }
 
         renderer.render(graphics, mouseX, mouseY);
 
-        pose.popPose();
+        pose.popMatrix();
 
         return isHovered ? Optional.of(this) : Optional.empty();
     }

@@ -19,13 +19,13 @@ public final class MinecraftFontRenderer implements FontRenderer {
     }
 
     @Override
-    public void draw(final GuiGraphics graphics, final CharSequence value, final int argb) {
-        graphics.drawString(font, value.toString(), 0, 0, argb);
+    public void drawInBatch(final CharSequence value, final int argb, final Matrix4f matrix, final MultiBufferSource buffer) {
+        font.drawInBatch(value.toString(), 0, 0, argb, false, matrix, buffer, Font.DisplayMode.NORMAL, 0, LightTexture.pack(0xF, 0xF));
     }
 
     @Override
-    public void drawInBatch(final CharSequence value, final int argb, final Matrix4f matrix, final MultiBufferSource buffer) {
-        font.drawInBatch(value.toString(), 0, 0, argb, false, matrix, buffer, Font.DisplayMode.NORMAL, 0, LightTexture.pack(0xF, 0xF));
+    public void draw(final GuiGraphics graphics, final CharSequence value, final int argb) {
+        graphics.drawString(font, value.toString(), 0, 0, argb, false);
     }
 
     @Override

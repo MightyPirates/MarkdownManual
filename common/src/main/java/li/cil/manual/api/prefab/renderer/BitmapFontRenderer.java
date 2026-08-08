@@ -1,17 +1,16 @@
 package li.cil.manual.api.prefab.renderer;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import li.cil.manual.api.render.FontRenderer;
-import li.cil.manual.api.util.Constants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 
 import java.util.Optional;
@@ -30,8 +29,6 @@ public abstract class BitmapFontRenderer implements FontRenderer {
 
     private static final int FULL_BRIGHT = LightTexture.pack(0xF, 0xF);
 
-    private RenderType renderLayer;
-
     protected BitmapFontRenderer() {
         CHAR_MAP = new Char2IntOpenHashMap();
         final CharSequence chars = getCharacters();
@@ -45,14 +42,26 @@ public abstract class BitmapFontRenderer implements FontRenderer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void drawInBatch(final CharSequence value, final int argb, final Matrix4f matrix, final MultiBufferSource bufferFactory) {
-        final VertexConsumer buffer = getDefaultBuffer(bufferFactory);
+        final VertexConsumer buffer = bufferFactory.getBuffer(RenderTypes.text(getTextureLocation()));
 
         float tx = 0f;
         for (int i = 0; i < value.length(); i++) {
-            final char ch = value.charAt(i);
-            drawChar(matrix, buffer, argb, tx, ch);
-            tx += width(" ") + getGapU();
+            drawChar(matrix, buffer, argb, tx, value.charAt(i));
+            tx += charWidth() + getGapU();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void draw(final GuiGraphics graphics, final CharSequence value, final int argb) {
+        int tx = 0;
+        for (int i = 0; i < value.length(); i++) {
+            drawChar(graphics, argb, tx, value.charAt(i));
+            tx += charWidth() + getGapU();
         }
     }
 
@@ -97,7 +106,7 @@ public abstract class BitmapFontRenderer implements FontRenderer {
      *
      * @return the location of the font texture.
      */
-    protected abstract ResourceLocation getTextureLocation();
+    protected abstract Identifier getTextureLocation();
 
     /**
      * The actual resolution of the texture.
@@ -131,12 +140,21 @@ public abstract class BitmapFontRenderer implements FontRenderer {
 
     // --------------------------------------------------------------------- //
 
-    private VertexConsumer getDefaultBuffer(final MultiBufferSource bufferFactory) {
-        if (renderLayer == null) {
-            renderLayer = FontRenderTypes.create(getTextureLocation());
+    private void drawChar(final GuiGraphics graphics, final int argb, final int x, final char ch) {
+        if (Character.isWhitespace(ch) || Character.isISOControl(ch)) {
+            return;
         }
 
-        return bufferFactory.getBuffer(renderLayer);
+        final int index = getCharIndex(ch);
+        final int column = index % COLUMNS;
+        final int row = index / COLUMNS;
+
+        graphics.blit(RenderPipelines.GUI_TEXTURED, getTextureLocation(),
+            x, 0,
+            column * (charWidth() + getGapU()), row * (lineHeight() + getGapV()),
+            charWidth(), lineHeight(),
+            getResolution(), getResolution(),
+            argb);
     }
 
     private void drawChar(final Matrix4f matrix, final VertexConsumer buffer, final int argb, final float x, final char ch) {
@@ -185,30 +203,5 @@ public abstract class BitmapFontRenderer implements FontRenderer {
 
     private static final class MutableInteger {
         public int value;
-    }
-
-    private static final class FontRenderTypes extends RenderType {
-        public static RenderType create(final ResourceLocation texture) {
-            return create(Constants.MOD_ID + "/bitmap_font",
-                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-                VertexFormat.Mode.QUADS, 256,
-                false, false,
-                CompositeState.builder()
-                    .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-                    .setTextureState(new TextureStateShard(texture, false, false))
-                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                    .setLightmapState(LIGHTMAP)
-                    .setWriteMaskState(COLOR_WRITE)
-                    .createCompositeState(false));
-        }
-
-        // --------------------------------------------------------------------- //
-
-        private FontRenderTypes() {
-            super("", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, () -> {
-            }, () -> {
-            });
-            throw new UnsupportedOperationException("No meant to be instantiated.");
-        }
     }
 }
