@@ -289,7 +289,7 @@ public class TextSegment extends AbstractSegment {
     private int computeWrappedIndent() {
         final TextSegment textSegment = getRootTextSegment();
         final CharSequence rootPrefix = textSegment.text.subSequence(0, Math.min(2, textSegment.text.length()));
-        return (ArrayUtils.contains(LISTS, rootPrefix)) ? getFont().width(rootPrefix) : 0;
+        return ArrayUtils.contains(LISTS, rootPrefix) ? getFont().width(rootPrefix) : 0;
     }
 
     // ----------------------------------------------------------------------- //

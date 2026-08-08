@@ -44,7 +44,7 @@ public class NamespacePathProvider implements PathProvider {
         final Block block = Block.byItem(item);
         if (block != Blocks.AIR) {
             final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-            if (blockId == BuiltInRegistries.BLOCK.getDefaultKey()) {
+            if (blockId.equals(BuiltInRegistries.BLOCK.getDefaultKey())) {
                 return Optional.empty();
             }
 
@@ -57,7 +57,7 @@ public class NamespacePathProvider implements PathProvider {
             }
         } else {
             final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-            if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
+            if (itemId.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
                 return Optional.empty();
             }
 
@@ -77,7 +77,7 @@ public class NamespacePathProvider implements PathProvider {
     public Optional<String> pathFor(final Level world, final BlockPos pos, final Direction face) {
         final Block block = world.getBlockState(pos).getBlock();
         final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-        if (blockId == BuiltInRegistries.BLOCK.getDefaultKey()) {
+        if (blockId.equals(BuiltInRegistries.BLOCK.getDefaultKey())) {
             return Optional.empty();
         }
 

@@ -61,8 +61,8 @@ public class TextureContentRenderer implements ContentRenderer {
     // --------------------------------------------------------------------- //
 
     private static class ImageTexture extends SimpleTexture {
-        private int width = 0;
-        private int height = 0;
+        private int width;
+        private int height;
         private boolean isValid;
 
         ImageTexture(final ResourceLocation location) {

@@ -39,7 +39,7 @@ public class NamespaceDocumentProvider implements DocumentProvider {
         final ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         final ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, basePath + path);
         return resourceManager.getResource(location).flatMap(resource -> {
-            try (final InputStream stream = resource.open()) {
+            try (InputStream stream = resource.open()) {
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));
                 final ArrayList<String> lines = new ArrayList<>();
                 String line;

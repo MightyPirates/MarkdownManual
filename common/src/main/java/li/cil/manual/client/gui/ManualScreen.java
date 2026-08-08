@@ -33,15 +33,15 @@ public final class ManualScreen extends Screen {
     private final DocumentRenderer documentRenderer;
     private String currentPath;
 
-    private int leftPos = 0;
-    private int topPos = 0;
-    private float scrollPos = 0;
+    private int leftPos;
+    private int topPos;
+    private float scrollPos;
 
-    private boolean isDraggingScrollButton = false;
-    private int documentHeight = 0;
+    private boolean isDraggingScrollButton;
+    private int documentHeight;
     private Optional<InteractiveSegment> currentSegment = Optional.empty();
 
-    private ScrollButton scrollButton = null;
+    private ScrollButton scrollButton;
 
     public ManualScreen(final ManualModel model, final ManualStyle manualStyle, final ManualScreenStyle screenStyle) {
         super(Component.literal("Manual"));

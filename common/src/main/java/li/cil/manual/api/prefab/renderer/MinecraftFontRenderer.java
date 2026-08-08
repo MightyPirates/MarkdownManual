@@ -3,8 +3,8 @@ package li.cil.manual.api.prefab.renderer;
 import li.cil.manual.api.render.FontRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import org.joml.Matrix4f;
 
