@@ -20,7 +20,7 @@
     "depends": {
         "fabric-api": ">=${fabricApiVersion}",
         "architectury": ">=${architecturyVersion}",
-        "minecraft": ">=${minecraftVersion}",
+        "minecraft": "${minecraftVersion}",
         "java": ">=21"
     },
     "custom": {
