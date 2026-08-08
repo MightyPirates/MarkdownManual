@@ -90,7 +90,6 @@ subprojects {
 
 val projectConfigurations = mapOf(
     "fabric" to "Fabric",
-    "forge" to "Forge",
     "neoforge" to "NeoForge"
 )
 
