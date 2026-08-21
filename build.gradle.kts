@@ -40,8 +40,8 @@ subprojects {
             filter { includeGroupByRegex("org\\.parchmentmc.*") }
         }
         exclusiveContent {
-            forRepository { maven("https://cursemaven.com") }
-            filter { includeGroup("curse.maven") }
+            forRepository { maven("https://maven.blamejared.com") }
+            filter { includeGroup("mezz.jei") }
         }
     }
 

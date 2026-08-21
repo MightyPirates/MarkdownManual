@@ -11,6 +11,8 @@ fabric-api = "0.116.15+1.21.1"
 neoforge-platform = "21.1.248"
 neoforge-loader = "2"
 
+jei = "19.43.0.395"
+
 [plugins]
 loom = { id = "dev.architectury.loom", version = "1.17-SNAPSHOT" }
 architectury = { id = "architectury-plugin", version = "3.5-SNAPSHOT" }
@@ -27,3 +29,6 @@ fabric-architectury = { group = "dev.architectury", name = "architectury-fabric"
 
 neoforge-platform = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge-platform" }
 neoforge-architectury = { group = "dev.architectury", name = "architectury-neoforge", version.ref = "architectury" }
+
+jei-fabric = { group = "mezz.jei", name = "jei-1.21.1-fabric", version.ref = "jei" }
+jei-neoforge = { group = "mezz.jei", name = "jei-1.21.1-neoforge", version.ref = "jei" }

@@ -4,6 +4,8 @@ val neoforgeVersion: String = libs.versions.neoforge.platform.get()
 val neoforgeLoaderVersion: String = libs.versions.neoforge.loader.get()
 val architecturyVersion: String = libs.versions.architectury.get()
 
+val devOnlyMods: Configuration by configurations.creating
+
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 }
@@ -12,9 +14,14 @@ repositories {
     maven("https://maven.neoforged.net/releases")
 }
 
+configurations.named("modRuntimeOnly") { extendsFrom(devOnlyMods) }
+
 dependencies {
     neoForge(libs.neoforge.platform)
     modImplementation(libs.neoforge.architectury)
+
+    // Not used by mod, just for dev convenience.
+    devOnlyMods(libs.jei.neoforge)
 }
 
 tasks {
