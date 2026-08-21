@@ -16,20 +16,13 @@ val mavenGroup: String by project
 val enabledPlatforms: String by project
 val minecraftVersion: String = libs.versions.minecraft.get()
 
-fun getGitRef(): String {
-    return providers.exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-        isIgnoreExitValue = true
-    }.standardOutput.asText.get().trim()
-}
-
 subprojects {
     apply(plugin = "java")
     apply(plugin = "pmd")
     apply(plugin = rootProject.libs.plugins.architectury.get().pluginId)
     apply(plugin = rootProject.libs.plugins.loom.get().pluginId)
 
-    version = "${modVersion}+${getGitRef()}"
+    version = "${modVersion}+${gitRef()}"
     group = mavenGroup
     base.archivesName.set("${modId}-MC${minecraftVersion}-${project.name}")
 
@@ -62,19 +55,9 @@ subprojects {
         "compileOnly"("com.google.code.findbugs:jsr305:3.0.2")
     }
 
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
+    configureJava()
 
-    configure<PmdExtension> {
-        toolVersion = "7.26.0"
-        ruleSets = emptyList()
-        ruleSetFiles = rootProject.files("config/pmd/ruleset.xml")
-        isConsoleOutput = true
-        isIgnoreFailures = false
-    }
+    configurePmd()
 
     tasks.withType<Pmd>().configureEach {
         exclude("**/mixin/**")
@@ -177,13 +160,6 @@ for (platform in enabledPlatforms.split(',')) {
     }
 }
 
-tasks.register("lint") {
-    group = "verification"
-    description = "Runs Spotless and PMD across all modules."
-    dependsOn("spotlessCheck")
-    dependsOn(subprojects.map { "${it.path}:pmdMain" })
-}
-
 spotless {
     java {
         target("**/src/*/java/li/cil/**/*.java")
@@ -195,3 +171,5 @@ spotless {
         importOrder("", "javax|java", "\\#")
     }
 }
+
+registerLintTask()
