@@ -105,7 +105,7 @@ subprojects {
 
     idea {
         module {
-            for (exclude in arrayOf("out", "logs")) {
+            for (exclude in arrayOf("out", "logs", "run")) {
                 excludeDirs.add(file(exclude))
             }
         }
@@ -186,7 +186,7 @@ tasks.register("lint") {
 
 spotless {
     java {
-        target("*/src/*/java/li/cil/**/*.java")
+        target("**/src/*/java/li/cil/**/*.java")
 
         endWithNewline()
         trimTrailingWhitespace()

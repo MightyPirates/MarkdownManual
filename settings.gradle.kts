@@ -12,6 +12,7 @@ pluginManagement {
             forRepository { maven("https://maven.fabricmc.net") }
             filter {
                 includeGroupByRegex("net\\.fabricmc.*")
+                includeGroup("fabric-loom")
             }
         }
         exclusiveContent {
