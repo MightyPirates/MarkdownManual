@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.client.document;
 
 import com.mojang.blaze3d.vertex.*;

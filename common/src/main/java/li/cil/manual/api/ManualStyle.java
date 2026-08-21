@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.api;
 
 import li.cil.manual.api.prefab.renderer.MinecraftFontRenderer;

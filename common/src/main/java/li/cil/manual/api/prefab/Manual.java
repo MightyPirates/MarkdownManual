@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.api.prefab;
 
 import com.google.common.base.Suppliers;

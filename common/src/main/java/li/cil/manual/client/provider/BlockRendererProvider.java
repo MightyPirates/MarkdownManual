@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.client.provider;
 
 import com.mojang.brigadier.StringReader;
