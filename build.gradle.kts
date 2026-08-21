@@ -140,4 +140,10 @@ spotless {
     }
 }
 
+tasks.named("build") {
+    dependsOn("apiJar", "apiSourcesJar")
+}
+
 registerLintTask()
+registerApiJarTask(minecraftVersion, "li/cil/manual/api")
+configureMavenPublishing(minecraftVersion, "https://github.com/fnuecke/MarkdownManual")
