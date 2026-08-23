@@ -16,6 +16,9 @@ dependencies {
     modApi(libs.fabric.api)
     modApi(libs.fabric.architectury)
 
+    // Allows `remapSourcesJar` to resolve `@ExpectPlatform` in the common sources it bundles.
+    compileOnly(libs.architectury.injectables)
+
     // Not used by mod, just for dev convenience.
     devOnlyMods(libs.jei.fabric)
 }
