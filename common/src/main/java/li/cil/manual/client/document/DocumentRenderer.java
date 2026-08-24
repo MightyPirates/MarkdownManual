@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.client.document;
 
 import li.cil.manual.api.ManualModel;

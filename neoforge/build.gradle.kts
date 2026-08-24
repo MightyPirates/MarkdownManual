@@ -4,6 +4,8 @@ val neoforgeVersion: String = libs.versions.neoforge.platform.get()
 val neoforgeLoaderVersion: String = libs.versions.neoforge.loader.get()
 val architecturyVersion: String = libs.versions.architectury.get()
 
+val devOnlyMods: Configuration by configurations.creating
+
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 }
@@ -12,12 +14,17 @@ repositories {
     maven("https://maven.neoforged.net/releases")
 }
 
+configurations.named("modRuntimeOnly") { extendsFrom(devOnlyMods) }
+
 dependencies {
     neoForge(libs.neoforge.platform)
     modImplementation(libs.neoforge.architectury)
 
+    // Allows `remapSourcesJar` to resolve `@ExpectPlatform` in the common sources it bundles.
+    compileOnly(libs.architectury.injectables)
+
     // Not used by mod, just for dev convenience.
-    modRuntimeOnly(libs.jei.neoforge)
+    devOnlyMods(libs.jei.neoforge)
 }
 
 tasks {

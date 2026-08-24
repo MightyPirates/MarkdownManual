@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.api.util;
 
 import com.google.common.io.Files;

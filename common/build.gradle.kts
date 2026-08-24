@@ -13,16 +13,3 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modApi(libs.architectury.api)
 }
-
-tasks {
-    register<Jar>("apiJar") {
-        from(sourceSets.main.get().allSource)
-        from(sourceSets.main.get().output)
-        archiveClassifier.set("api")
-        include("li/cil/manual/api/**")
-    }
-
-    jar {
-        dependsOn("apiJar")
-    }
-}

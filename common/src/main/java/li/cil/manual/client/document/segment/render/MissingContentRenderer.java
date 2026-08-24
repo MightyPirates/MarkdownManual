@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.client.document.segment.render;
 
 import li.cil.manual.api.render.InteractiveContentRenderer;

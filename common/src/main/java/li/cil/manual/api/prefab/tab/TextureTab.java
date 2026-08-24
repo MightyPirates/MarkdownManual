@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package li.cil.manual.api.prefab.tab;
 
 import net.minecraft.client.gui.GuiGraphics;

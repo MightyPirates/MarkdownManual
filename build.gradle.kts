@@ -16,20 +16,13 @@ val mavenGroup: String by project
 val enabledPlatforms: String by project
 val minecraftVersion: String = libs.versions.minecraft.get()
 
-fun getGitRef(): String {
-    return providers.exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-        isIgnoreExitValue = true
-    }.standardOutput.asText.get().trim()
-}
-
 subprojects {
     apply(plugin = "java")
     apply(plugin = "pmd")
     apply(plugin = rootProject.libs.plugins.architectury.get().pluginId)
     apply(plugin = rootProject.libs.plugins.loom.get().pluginId)
 
-    version = "${modVersion}+${getGitRef()}"
+    version = "${modVersion}+${gitRef()}"
     group = mavenGroup
     base.archivesName.set("${modId}-MC${minecraftVersion}-${project.name}")
 
@@ -47,10 +40,6 @@ subprojects {
             filter { includeGroupByRegex("org\\.parchmentmc.*") }
         }
         exclusiveContent {
-            forRepository { maven("https://cursemaven.com") }
-            filter { includeGroup("curse.maven") }
-        }
-        exclusiveContent {
             forRepository { maven("https://maven.blamejared.com") }
             filter { includeGroup("mezz.jei") }
         }
@@ -66,54 +55,10 @@ subprojects {
         "compileOnly"("com.google.code.findbugs:jsr305:3.0.2")
     }
 
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    configure<PmdExtension> {
-        toolVersion = "7.26.0"
-        ruleSets = emptyList()
-        ruleSetFiles = rootProject.files("config/pmd/ruleset.xml")
-        isConsoleOutput = true
-        isIgnoreFailures = false
-    }
-
-    tasks.withType<Pmd>().configureEach {
-        exclude("**/mixin/**")
-        reports {
-            xml.required.set(false)
-            html.required.set(true)
-        }
-    }
-
-    tasks {
-        jar {
-            from("LICENSE") {
-                rename { "${it}_${modId}" }
-            }
-        }
-
-        withType<JavaCompile>().configureEach {
-            options.encoding = "utf-8"
-            options.release.set(21)
-            options.compilerArgs.addAll(
-                listOf(
-                    "-Xlint:all,-processing,-serial,-classfile,-this-escape",
-                    "-Xmaxwarns", "1000",
-                )
-            )
-        }
-    }
-
-    idea {
-        module {
-            for (exclude in arrayOf("out", "logs")) {
-                excludeDirs.add(file(exclude))
-            }
-        }
-    }
+    configureJava()
+    configurePmd()
+    embedLicenses()
+    configureIdeaExcludes()
 }
 
 val projectConfigurations = mapOf(
@@ -181,16 +126,11 @@ for (platform in enabledPlatforms.split(',')) {
     }
 }
 
-tasks.register("lint") {
-    group = "verification"
-    description = "Runs Spotless and PMD across all modules."
-    dependsOn("spotlessCheck")
-    dependsOn(subprojects.map { "${it.path}:pmdMain" })
-}
-
 spotless {
     java {
-        target("*/src/*/java/li/cil/**/*.java")
+        target("**/src/*/java/li/cil/**/*.java")
+
+        licenseHeader("/* SPDX-License-Identifier: MIT */\n\n")
 
         endWithNewline()
         trimTrailingWhitespace()
@@ -199,3 +139,11 @@ spotless {
         importOrder("", "javax|java", "\\#")
     }
 }
+
+tasks.named("build") {
+    dependsOn("apiJar", "apiSourcesJar")
+}
+
+registerLintTask()
+registerApiJarTask(minecraftVersion, "li/cil/manual/api")
+configureMavenPublishing(minecraftVersion, "https://github.com/fnuecke/MarkdownManual")
