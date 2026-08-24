@@ -146,4 +146,4 @@ tasks.named("build") {
 
 registerLintTask()
 registerApiJarTask(minecraftVersion, "li/cil/manual/api")
-configureMavenPublishing(minecraftVersion, "https://github.com/fnuecke/MarkdownManual")
+configureMavenPublishing(minecraftVersion, "https://github.com/MightyPirates/MarkdownManual")

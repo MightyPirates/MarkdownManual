@@ -7,6 +7,11 @@ val devOnlyMods: Configuration by configurations.creating
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+
+    runs {
+        named("client") { runDir = "run/client" }
+        named("server") { runDir = "run/server" }
+    }
 }
 
 configurations.named("modRuntimeOnly") { extendsFrom(devOnlyMods) }
