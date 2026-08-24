@@ -50,6 +50,10 @@ subprojects {
             forRepository { maven("https://cursemaven.com") }
             filter { includeGroup("curse.maven") }
         }
+        exclusiveContent {
+            forRepository { maven("https://maven.blamejared.com") }
+            filter { includeGroup("mezz.jei") }
+        }
     }
 
     dependencies {

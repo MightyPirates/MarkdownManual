@@ -15,6 +15,9 @@ repositories {
 dependencies {
     neoForge(libs.neoforge.platform)
     modImplementation(libs.neoforge.architectury)
+
+    // Not used by mod, just for dev convenience.
+    modRuntimeOnly(libs.jei.neoforge)
 }
 
 tasks {

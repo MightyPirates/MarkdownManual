@@ -11,6 +11,9 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modApi(libs.fabric.api)
     modApi(libs.fabric.architectury)
+
+    // Not used by mod, just for dev convenience.
+    modRuntimeOnly(libs.jei.fabric)
 }
 
 tasks {
