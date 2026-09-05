@@ -10,8 +10,8 @@ loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
     runs {
-        named("client") { runDir = "run/client" }
-        named("server") { runDir = "run/server" }
+        named("client") { runDirectory.set(file("run/client")) }
+        named("server") { runDirectory.set(file("run/server")) }
     }
 }
 
