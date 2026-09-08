@@ -2,7 +2,7 @@
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package li.cil.manual.client.document.segment;
+package li.cil.manual.client.fabric;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

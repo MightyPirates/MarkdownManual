@@ -2,7 +2,7 @@
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package li.cil.manual.client.document.segment;
+package li.cil.manual.client.neoforge;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

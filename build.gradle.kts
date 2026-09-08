@@ -138,12 +138,19 @@ spotless {
         indentWithSpaces()
         importOrder("", "javax|java", "\\#")
     }
+
+    format("packageInfo") {
+        target("**/src/*/java/li/cil/**/package-info.java")
+
+        licenseHeader("/* SPDX-License-Identifier: MIT */\n\n", "(/\\*\\*|//|@|package )")
+    }
 }
 
 tasks.named("build") {
     dependsOn("apiJar", "apiSourcesJar")
 }
 
+registerPackageInfoTask()
 registerLintTask()
 registerApiJarTask(minecraftVersion, "li/cil/manual/api")
 configureMavenPublishing(minecraftVersion, "https://github.com/MightyPirates/MarkdownManual")
