@@ -1,9 +1,9 @@
-val modId: String by project
+val modId = providers.gradleProperty("modId").get()
 val minecraftVersion: String = libs.versions.minecraft.get()
 val fabricApiVersion: String = libs.versions.fabric.api.get()
 val architecturyVersion: String = libs.versions.architectury.get()
 
-val devOnlyMods: Configuration by configurations.creating
+val devOnlyMods = configurations.create("devOnlyMods")
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)

@@ -28,10 +28,10 @@ pluginManagement {
 
 include("common")
 
-val enabledPlatforms: String by settings
+val enabledPlatforms = providers.gradleProperty("enabledPlatforms").get()
 for (enabledPlatform in enabledPlatforms.split(",")) {
     include(enabledPlatform)
 }
 
-val modId: String by settings
+val modId = providers.gradleProperty("modId").get()
 rootProject.name = modId
