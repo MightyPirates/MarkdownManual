@@ -1,5 +1,5 @@
-val enabledPlatforms: String by project
-val modId: String by project
+val enabledPlatforms = providers.gradleProperty("enabledPlatforms").get()
+val modId = providers.gradleProperty("modId").get()
 
 architectury {
     common(enabledPlatforms.split(","))
@@ -13,3 +13,4 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modApi(libs.architectury.api)
 }
+

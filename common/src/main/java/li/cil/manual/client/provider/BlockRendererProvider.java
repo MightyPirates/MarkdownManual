@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class BlockRendererProvider extends AbstractRendererProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(BlockRendererProvider.class);
 
     private static final Map<String, BlockState> BLOCK_STATE_CACHE = new HashMap<>();
 

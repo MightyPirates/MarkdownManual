@@ -1,17 +1,17 @@
-val modId: String by project
+val modId = providers.gradleProperty("modId").get()
 val minecraftVersion: String = libs.versions.minecraft.get()
 val neoforgeVersion: String = libs.versions.neoforge.platform.get()
 val neoforgeLoaderVersion: String = libs.versions.neoforge.loader.get()
 val architecturyVersion: String = libs.versions.architectury.get()
 
-val devOnlyMods: Configuration by configurations.creating
+val devOnlyMods = configurations.create("devOnlyMods")
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
     runs {
-        named("client") { runDir = "run/client" }
-        named("server") { runDir = "run/server" }
+        named("client") { runDirectory.set(file("run/client")) }
+        named("server") { runDirectory.set(file("run/server")) }
     }
 }
 

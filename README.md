@@ -1,5 +1,10 @@
 # MarkdownManual
 
+[![build](https://img.shields.io/github/actions/workflow/status/MightyPirates/MarkdownManual/build.yml?label=build)](https://github.com/MightyPirates/MarkdownManual/actions/workflows/build.yml)
+[![curseforge](https://img.shields.io/curseforge/dt/502485?label=curseforge&color=f16436&logo=curseforge&logoColor=white)](https://www.curseforge.com/minecraft/mc-mods/markdownmanual)
+[![modrinth](https://img.shields.io/modrinth/dt/markdownmanual?label=modrinth&color=1bd96a&logo=modrinth&logoColor=white)](https://modrinth.com/mod/markdownmanual)
+![loaders](https://img.shields.io/badge/loaders-Fabric%20%7C%20NeoForge-blueviolet)
+
 MarkdownManual is a library mod for Minecraft that allows painless definition of in-game manuals backed by Markdown
 documents.
 

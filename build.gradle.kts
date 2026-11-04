@@ -10,10 +10,10 @@ plugins {
     alias(libs.plugins.spotless)
 }
 
-val modId: String by project
-val modVersion: String by project
-val mavenGroup: String by project
-val enabledPlatforms: String by project
+val modId = providers.gradleProperty("modId").get()
+val modVersion = providers.gradleProperty("modVersion").get()
+val mavenGroup = providers.gradleProperty("mavenGroup").get()
+val enabledPlatforms = providers.gradleProperty("enabledPlatforms").get()
 val minecraftVersion: String = libs.versions.minecraft.get()
 
 subprojects {
@@ -49,7 +49,7 @@ subprojects {
         "minecraft"(rootProject.libs.minecraft)
         val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
         "mappings"(loom.layered {
-            officialMojangMappings()
+            officialMojangMappings { nameSyntheticMembers = true }
             parchment("org.parchmentmc.data:parchment-${rootProject.libs.versions.parchment.minecraft.get()}:${rootProject.libs.versions.parchment.mappings.get()}@zip")
         })
         "compileOnly"("com.google.code.findbugs:jsr305:3.0.2")
@@ -75,8 +75,14 @@ for (platform in enabledPlatforms.split(',')) {
             loader(platform)
         }
 
-        val common: Configuration by configurations.creating
-        val shadowBundle: Configuration by configurations.creating
+        configure<LoomGradleExtensionAPI> {
+            runs {
+                named("client") { programArguments.addAll(devPlayerArgs()) }
+            }
+        }
+
+        val common = configurations.create("common")
+        val shadowBundle = configurations.create("shadowBundle")
 
         configurations {
             common.isCanBeResolved = true
@@ -138,12 +144,19 @@ spotless {
         indentWithSpaces()
         importOrder("", "javax|java", "\\#")
     }
+
+    format("packageInfo") {
+        target("**/src/*/java/li/cil/**/package-info.java")
+
+        licenseHeader("/* SPDX-License-Identifier: MIT */\n\n", "(/\\*\\*|//|@|package )")
+    }
 }
 
 tasks.named("build") {
     dependsOn("apiJar", "apiSourcesJar")
 }
 
+registerPackageInfoTask()
 registerLintTask()
 registerApiJarTask(minecraftVersion, "li/cil/manual/api")
 configureMavenPublishing(minecraftVersion, "https://github.com/MightyPirates/MarkdownManual")

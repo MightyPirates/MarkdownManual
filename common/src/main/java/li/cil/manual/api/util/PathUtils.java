@@ -6,7 +6,6 @@ import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
 
 public final class PathUtils {
-    @SuppressWarnings("UnstableApiUsage")
     public static String resolve(final String base, final String path) {
         final String absolutePath;
         if (path.startsWith("/")) {
